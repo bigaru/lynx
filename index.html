@@ -18,10 +18,18 @@
   <div class="d-flex flex-column justify-content-center">
     <h1>Tell me your secrets</h1>
     <div class="form-group">
-      <label for="msg">Message:</label>
-      <textarea class="form-control" id="msg" rows="4"> </textarea>
+        <label for="msg">Message:</label>
+        <textarea class="form-control" id="msg" rows="4"> </textarea>
     </div>
-    <button type="submit" onclick="send()" class="btn btn-primary">Submit</button>
+    <div class="form-group">
+        <label for="msg">File:</label>
+        <br>
+        <input type="file" id="file">
+    </div>
+    <div>
+        <button type="submit" onclick="sendMsg()" class="btn btn-primary">send message</button>
+        <button type="submit" onclick="sendFile()" class="btn btn-primary">send file</button>
+    </div>
  </div> 
 
 </div>
@@ -34,13 +42,24 @@ mQENBFz2aFABCAC+VMAC0Mi2fBVgpJkVojRjDHk8hmjF8KRGzarxpxJGe2ALlrBf
 
     let key = null;
 
-    function send(){
+    function sendFile(){
+        const file = document.getElementById("file").files[0];
         
-        const content = document.getElementById("msg").innerHTML;
+        if(file){
+            const reader = new FileReader();
+            reader.onload = () => start(reader.result);
+            reader.readAsArrayBuffer(file);
+        }
+    }
 
+    function sendMsg(){
+        const content = document.getElementById("msg").innerHTML.trim();
+        if(content.length > 0) start(content);
+    }
+
+    function start(content){
         if(!key) loadKey(content);
         else     encrypt(content);
-        
     }
 
     function loadKey(msg){
