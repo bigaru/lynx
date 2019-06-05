@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Lynx</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style> 
+    .form-group { 
+        width: 100%; 
+    } 
+    
+    .flex-column {
+        height: 100vh;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Tell me your secrets</h1>
+
+  <div class="d-flex flex-column align-items-center">
+    <div class="form-group">
+      <label for="msg">Message:</label>
+      <textarea class="form-control" id="msg" rows="4"> </textarea>
+    </div>
+    <button type="submit" onclick="send()" class="btn btn-primary">Submit</button>
+ </div> 
+
+</div>
+<script>
+    function send(){
+        const content = document.getElementById("msg").innerHTML;
+        
+    }
+</script> 
+</body>
+</html> 
