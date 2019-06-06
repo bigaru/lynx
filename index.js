@@ -1,22 +1,30 @@
+const mongoService = require('./mongoService.js')
+const general = require('./general.js')
 const express = require('express')
 const fs = require('fs')
 
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
+general.insertPublicKeyinJS()
 
-const baseLogic = fs.readFileSync('cryptoBase.js', 'utf8')
-const pubKey = fs.readFileSync('pub.asc', 'utf8')
-const cryptoJsData = 'const pub_pgp = `' + pubKey + '`; \n' + baseLogic
-
-fs.writeFileSync('public/js/crypto.js', cryptoJsData)
-
+app.use(express.json())
 app.use(express.static('public'))
-
 app.get('/', (req, res) => res.sendFile('index.html'))
 
-app.all("/*",(req, res) => {
-    res.status(400)
-    res.send()
+app.post('/posts/', (req, res) => {
+    const body = req.body
+    
+    if(!body || !body.name || !body.content) res.sendStatus(400)
+    else{
+
+        mongoService.addIncomings(body, result => {
+            if(result.result.ok) res.status(201).send(body)
+            else res.sendStatus(500)            
+        })
+
+    }
 })
+
+app.all("/*",(req, res) => res.sendStatus(404))
 
 app.listen(port, () => console.log(`app listening on port ${port}!`))
