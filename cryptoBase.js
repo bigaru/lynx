@@ -13,7 +13,7 @@ function sendFile(){
 
 function sendMsg(){
     const content = document.getElementById("msgBox").value.trim();
-    if(content.length > 0) start(content, ".txt");
+    if(content.length > 0) start(content, makeid(10) + ".txt");
 }
 
 function start(content, name){
@@ -55,3 +55,12 @@ function postData(data){
         }
     })
 }
+
+function makeid(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for ( let i = 0; i < length; i++ ) {
+       result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+ }
