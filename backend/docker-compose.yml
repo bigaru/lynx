@@ -1,0 +1,29 @@
+version: '3.1'
+
+services:
+  pandadb:
+    image: mongo:4.1-bionic
+    networks:
+      - zoonet
+# uncomment for outside access from 3rd party tool
+#    ports:
+#      - "27017:27017"
+    volumes:
+      - "cryptedData:/data/db"
+
+  web:
+    build: .
+    networks:
+      - zoonet
+    ports:
+      - "80:80"
+    environment:
+      - DB_URL=mongodb://pandadb:27017
+    depends_on:
+      - pandadb
+
+networks:
+  zoonet:
+
+volumes:
+    cryptedData:
