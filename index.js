@@ -1,7 +1,6 @@
 const mongoService = require('./mongoService.js')
 const general = require('./general.js')
 const express = require('express')
-const fs = require('fs')
 
 const app = express()
 const port = process.env.PORT || 3000

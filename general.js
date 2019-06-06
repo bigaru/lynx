@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 exports.insertPublicKeyinJS = function(){
     const baseLogic = fs.readFileSync('cryptoBase.js', 'utf8')
     const pubKey = fs.readFileSync('pub.asc', 'utf8')
