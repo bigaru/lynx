@@ -6,15 +6,15 @@ const client = new MongoClient(dbUrl, { useNewUrlParser: true, poolSize: 10 })
 
 let incomings
 
-client.connect()
+client
+    .connect()
     .then(client => {
         const db = client.db(dbName);
         incomings = db.collection("incomings")
     })
     .catch(err => console.log(err))
 
-exports.addIncomings = function(document, callback) {
-
+function addIncomings(document, callback) {
     incomings.insertOne(document)
         .then(result => callback(result))
         .catch(err => console.log(err))
@@ -24,3 +24,5 @@ process.on('SIGINT', () => {
     client.close()
     process.exit()
 })
+
+module.exports = { addIncomings }
