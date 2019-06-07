@@ -24,6 +24,13 @@ app.post('/posts/', (req, res) => {
     }
 })
 
+app.get('/posts/', (req, res) => {
+    //TODO add authentication check (TOTP + Signature)
+    mongoService.getIncomings(result => {
+        res.json(result)
+    })
+})
+
 app.all("/*",(req, res) => res.sendStatus(404))
 
 app.listen(port, () => console.log(`app listening on port ${port}!`))

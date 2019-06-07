@@ -20,9 +20,15 @@ function addIncomings(document, callback) {
         .catch(err => console.log(err))
 }
 
+function getIncomings(callback){
+    incomings.find({}).toArray()
+        .then(res => callback(res))
+        .catch(err => console.log(err))
+}
+
 process.on('SIGINT', () => {
     client.close()
     process.exit()
 })
 
-module.exports = { addIncomings }
+module.exports = { addIncomings, getIncomings }
