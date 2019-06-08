@@ -1,10 +1,13 @@
 const mongoService = require('./mongoService.js')
 const general = require('./general.js')
 const express = require('express')
+const speakeasy = require("speakeasy")
 
 const app = express()
 const port = process.env.PORT || 3000
 general.insertPublicKeyInJS()
+
+const shared_totp = process.env.TOTP_KEY || 'ig3t 76td vmok rffh iqgh 7kx5 kp2c ons6'
 
 app.use(express.json())
 app.use(express.static('public'))
@@ -25,10 +28,19 @@ app.post('/posts/', (req, res) => {
 })
 
 app.get('/posts/', (req, res) => {
-    //TODO add authentication check (TOTP + Signature)
-    mongoService.getIncomings(result => {
-        res.json(result)
-    })
+
+    const tokenValidates = speakeasy.totp.verify({
+        secret: shared_totp,
+        encoding: 'base32',
+        token: req.header('Authorization'),
+    });
+    
+    if (!tokenValidates) res.sendStatus(401)
+    else {
+        mongoService.getIncomings(result => {
+            res.json(result)
+        })
+    }
 })
 
 app.all("/*",(req, res) => res.sendStatus(404))

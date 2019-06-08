@@ -10,9 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "electron": "^5.0.2",
     "bootstrap": "^4.3.1",
+    "electron": "^5.0.2",
     "jquery": "^3.4.1",
-    "popper.js": "^1.15.0"
+    "popper.js": "^1.15.0",
+    "speakeasy": "^2.0.0"
   }
 }
