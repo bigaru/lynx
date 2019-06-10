@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
   </head>
   <body>
-        <div class="container-fluid">
-            <ul class="nav nav-pills mt-2 mb-3">
+        <div class="card border-0">
+            <ul class="card-header nav nav-pills">
                 <li class="nav-item">
                     <a class="nav-link active" data-toggle="pill" href="#setting">Setting</a>
                 </li>
@@ -22,28 +22,39 @@
                     Fetch
                 </button>
             </ul>
-            <div class="tab-content">
+            <div class="card-body tab-content">
                 <div class="tab-pane fade show active" id="setting">
-                    <div class="form-group">
-                        <label for="host">Host:</label>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Host</span>
+                        </div>
                         <input type="text" class="form-control" id="host" value="http://">
                     </div>
-                    <div class="form-group">
-                        <label for="totp">TOTP (base32):</label>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">TOTP (base32)</span>
+                        </div>                        
                         <input type="text" class="form-control" maxlength="39" id="totp">
                     </div>
-                    <div class="form-group">
-                        <label for="privateKey">PGP Private Key</label>
-                        <input type="file" class="form-control-file" id="privateKey">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">PGP Private Key</span>
+                        </div>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="privateKey">
+                            <label class="custom-file-label" for="privateKey">Choose file</label>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="password">PGP Password:</label>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">PGP Password</span>
+                        </div>                        
                         <input type="password" class="form-control" id="password">
-                    </div>  
+                    </div>
                 </div>
                 <div class="tab-pane fade" id="incoming">
 
-                    <table class="table table-striped">
+                    <table class="table table-striped table-borderless">
                         <thead>
                             <tr>
                                 <th>Id</th>
