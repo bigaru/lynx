@@ -7,7 +7,7 @@ const { machineIdSync } =  require('node-machine-id')
 
 const machineId = machineIdSync({original: true})
 openpgp.initWorker({ path:'node_modules/openpgp/dist/openpgp.worker.min.js' })
-let privKey, keyPath, host, totp
+let privKeyObj, keyPath, host, totp, loadedData
 
 host = localStorage.getItem('host')
 $('#host').val(host)
@@ -28,29 +28,59 @@ async function initTotp(encryptedTotp){
 function loadIncomings(data){
     $('#incoming-body').html("")
 
+    loadedData = data
+    let i = 0
+
     for(let d of data){
         $('#incoming-body').append(`
         <tr>
             <td>${d._id}</td>
             <td>${d.name}</td>
-            <td></td>
+            <td>
+                <button type="button" class="btn btn-outline-info" onclick="decryptPost(${i})">
+                    Decrypt
+                </button>
+            </td>
         </tr>
         `)
+        
+        i++;
     }
+}
+
+async function decryptPost(idx){
+    const post = loadedData[idx] 
+    const decOpt = {
+        message: await openpgp.message.readArmored(post.content),
+        privateKeys: [privKeyObj],
+        format: 'binary'
+    }
+    const plaintext = (await openpgp.decrypt(decOpt)).data;
+    download(plaintext, post.name)
+}
+
+function download(binary, filename){
+    var a = window.document.createElement('a');
+    a.href = window.URL.createObjectURL(new Blob([binary]));
+    a.download = filename;
+
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
 }
 
 async function signDetached(plaintext){
     const key = $('#privateKey').prop('files')[0]
 
-    if(!privKey || keyPath !== key.path){
+    if(!privKeyObj || keyPath !== key.path){
         keyPath = key.path
-        privKey = fs.readFileSync(keyPath, 'utf8')
+        const privKey = fs.readFileSync(keyPath, 'utf8')
+        privKeyObj = (await openpgp.key.readArmored(privKey)).keys[0];
+
+        const passphrase = $('#password').val()
+        await privKeyObj.decrypt(passphrase);
     }
-
-    const passphrase = $('#password').val()
-
-    const privKeyObj = (await openpgp.key.readArmored(privKey)).keys[0];
-    await privKeyObj.decrypt(passphrase);
 
     const options = {
         message: openpgp.message.fromText(plaintext),
