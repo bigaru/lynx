@@ -1,17 +1,29 @@
 window.$ = window.jQuery = require('jquery')
 window.Bootstrap = require('bootstrap')
-const speakeasy = require("speakeasy")
+const speakeasy = require('speakeasy')
 const openpgp = require('openpgp')
 const fs = require('fs')
+const { machineIdSync } =  require('node-machine-id')
 
+const machineId = machineIdSync({original: true})
 openpgp.initWorker({ path:'node_modules/openpgp/dist/openpgp.worker.min.js' })
 let privKey, keyPath, host, totp
 
 host = localStorage.getItem('host')
-totp = localStorage.getItem('totp')
-
 $('#host').val(host)
-$('#totp').val(totp)
+initTotp(localStorage.getItem('totp'))
+
+async function initTotp(encryptedTotp){
+    const opt = { 
+        message: await openpgp.message.readArmored(encryptedTotp),
+        passwords: machineId,
+        format: 'utf8' 
+    }
+    
+    const plainTotp = (await openpgp.decrypt(opt)).data
+    totp = plainTotp
+    $('#totp').val(plainTotp)
+}
 
 function loadIncomings(data){
     $('#incoming-body').html("")
@@ -86,7 +98,15 @@ function loadData(){
 
     if(shared_totp !== totp) {
         totp = shared_totp
-        localStorage.setItem('totp', shared_totp)
+        const opt = {
+            message: openpgp.message.fromText(shared_totp),
+            passwords: machineId,
+            armor: true
+        }
+
+        openpgp.encrypt(opt).then((encryptedTotp) => {
+            localStorage.setItem('totp', encryptedTotp.data)
+        })
     }
 
     getAuthorization()
