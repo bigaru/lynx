@@ -5,6 +5,13 @@ const openpgp = require('openpgp')
 const fs = require('fs')
 
 openpgp.initWorker({ path:'node_modules/openpgp/dist/openpgp.worker.min.js' })
+let privKey, keyPath, host, totp
+
+host = localStorage.getItem('host')
+totp = localStorage.getItem('totp')
+
+$('#host').val(host)
+$('#totp').val(totp)
 
 function loadIncomings(data){
     $('#incoming-body').html("")
@@ -21,8 +28,12 @@ function loadIncomings(data){
 }
 
 async function signDetached(plaintext){
-    const keyPath = $('#privateKey').prop('files')[0].path
-    const privKey = fs.readFileSync(keyPath, 'utf8')
+    const key = $('#privateKey').prop('files')[0]
+
+    if(!privKey || keyPath !== key.path){
+        keyPath = key.path
+        privKey = fs.readFileSync(keyPath, 'utf8')
+    }
 
     const passphrase = $('#password').val()
 
@@ -44,8 +55,7 @@ async function signDetached(plaintext){
 }
 
 function getToken(){
-    const shared_totp = $('#totp').val()
-    return speakeasy.totp({ secret: shared_totp, encoding: 'base32'})
+    return speakeasy.totp({ secret: totp, encoding: 'base32'})
 }
 
 async function getAuthorization(){
@@ -58,9 +68,7 @@ async function getAuthorization(){
 function makeRequest(authToken){
     const headers = new Headers()
     headers.append('Authorization', authToken)
-    
-    const URL = $('#host').val()
-    const getIncomings = new Request(URL + '/posts/', { method: 'GET', headers: headers })
+    const getIncomings = new Request(host + '/posts/', { method: 'GET', headers: headers })
     
     fetch(getIncomings).then(res => {    
         if(res.ok) res.json().then(loadIncomings)    
@@ -68,6 +76,19 @@ function makeRequest(authToken){
 }
 
 function loadData(){
+    const URL = $('#host').val()
+    const shared_totp = $('#totp').val()
+    
+    if(URL !== host) {
+        host = URL
+        localStorage.setItem('host', URL)
+    }
+
+    if(shared_totp !== totp) {
+        totp = shared_totp
+        localStorage.setItem('totp', shared_totp)
+    }
+
     getAuthorization()
     .then(makeRequest)
     .then(() => $('#incoming-tab').tab('show'))
