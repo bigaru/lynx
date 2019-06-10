@@ -4,7 +4,7 @@ const speakeasy = require("speakeasy")
 const openpgp = require('openpgp')
 const fs = require('fs')
 
-openpgp.initWorker({ path:'node_modules/openpgp/dist/openpgp.worker.js' })
+openpgp.initWorker({ path:'node_modules/openpgp/dist/openpgp.worker.min.js' })
 
 function loadIncomings(data){
     $('#incoming-body').html("")
