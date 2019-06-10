@@ -20,11 +20,12 @@ function loadIncomings(data){
     }
 }
 
-const shared_totp = process.env.TOTP_KEY || 'ig3t 76td vmok rffh iqgh 7kx5 kp2c ons6'
-const privKey = fs.readFileSync('privateKey.asc', 'utf8')
-const passphrase = process.env.PASSPHRASE|| '---123'
-
 async function signDetached(plaintext){
+    const keyPath = $('#privateKey').prop('files')[0].path
+    const privKey = fs.readFileSync(keyPath, 'utf8')
+
+    const passphrase = $('#password').val()
+
     const privKeyObj = (await openpgp.key.readArmored(privKey)).keys[0];
     await privKeyObj.decrypt(passphrase);
 
@@ -43,6 +44,7 @@ async function signDetached(plaintext){
 }
 
 function getToken(){
+    const shared_totp = $('#totp').val()
     return speakeasy.totp({ secret: shared_totp, encoding: 'base32'})
 }
 
@@ -57,7 +59,7 @@ function makeRequest(authToken){
     const headers = new Headers()
     headers.append('Authorization', authToken)
     
-    const URL = 'http://localhost'
+    const URL = $('#host').val()
     const getIncomings = new Request(URL + '/posts/', { method: 'GET', headers: headers })
     
     fetch(getIncomings).then(res => {    
@@ -65,6 +67,10 @@ function makeRequest(authToken){
     })
 }
 
-getAuthorization().then(makeRequest)
+function loadData(){
+    getAuthorization()
+    .then(makeRequest)
+    .then(() => $('#incoming-tab').tab('show'))
+}
 
 
