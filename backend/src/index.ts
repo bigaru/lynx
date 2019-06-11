@@ -1,9 +1,10 @@
 import { addIncomings, getIncomings } from './mongoService'
-import { insertPublicKeyInJS, checkAuthToken } from './authBundle'
+import { insertPublicKeyInJS, AuthenticationChecker } from './authBundle'
 import express from 'express'
 
 const app = express()
 const port = process.env.PORT || 3000
+const authChecker = new AuthenticationChecker()
 
 insertPublicKeyInJS()
 
@@ -28,7 +29,7 @@ app.post('/posts/', (req, res) => {
 app.get('/posts/', (req, res) => {
     const authToken = req.header('Authorization') || ""
 
-    checkAuthToken(authToken).then(authValid => {
+    authChecker.check(authToken).then(authValid => {
         if (!authValid) res.sendStatus(401)
         else {
             getIncomings(result => {
