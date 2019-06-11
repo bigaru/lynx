@@ -1,6 +1,6 @@
-const mongoService = require('./mongoService.js')
-const { insertPublicKeyInJS, checkAuthToken } = require('./authBundle.js')
-const express = require('express')
+import { addIncomings, getIncomings } from './mongoService'
+import { insertPublicKeyInJS, checkAuthToken } from './authBundle'
+import express from 'express'
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -17,7 +17,7 @@ app.post('/posts/', (req, res) => {
     if(!body || !body.name || !body.content) res.sendStatus(400)
     else{
 
-        mongoService.addIncomings(body, result => {
+        addIncomings(body, result => {
             if(result.result.ok) res.status(201).send(body)
             else res.sendStatus(500)            
         })
@@ -26,10 +26,12 @@ app.post('/posts/', (req, res) => {
 })
 
 app.get('/posts/', (req, res) => {
-    checkAuthToken(req.header('Authorization')).then(authValid => {
+    const authToken = req.header('Authorization') || ""
+
+    checkAuthToken(authToken).then(authValid => {
         if (!authValid) res.sendStatus(401)
         else {
-            mongoService.getIncomings(result => {
+            getIncomings(result => {
                 res.json(result)
             })
         }
