@@ -42,8 +42,8 @@ function postData(data){
 
     fetch('memos/', { 
         method: 'POST', 
-        headers: {'Content-Type': 'application/json' }, 
-        body: JSON.stringify(data) 
+        headers: {'Content-Type': 'application/json', 'Content-Encoding': 'gzip' },
+        body: pako.gzip(JSON.stringify(data))
     })
     .then(response => {
         if(response.status === 201){ 

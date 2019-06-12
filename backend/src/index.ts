@@ -22,6 +22,7 @@ app.use(express.json({ limit: payLoadSize }))
 app.use(express.static(__dirname + '/public'))
 app.use('/css/', express.static(__dirname + '/../node_modules/bootstrap/dist/css/'))
 app.use('/js/', express.static(__dirname + '/../node_modules/openpgp/dist/'))
+app.use('/js/', express.static(__dirname + '/../node_modules/pako/dist/'))
 
 app.get('/', (req, res) => res.sendFile('index.html'))
 
