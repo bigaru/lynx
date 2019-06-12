@@ -7,6 +7,7 @@ const app = express()
 const port = process.env.PORT || 3000
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017'
 const dbName = 'encryptedData'
+const payLoadSize = process.env.PAYLOAD_SIZE || '100mb'
 
 const mongoService = new MongoService(dbUrl, dbName)
 const authenticationChecker = new AuthenticationChecker()
@@ -17,7 +18,7 @@ process.on('SIGINT', () => {
     process.exit()
 })
 
-app.use(express.json())
+app.use(express.json({ limit: payLoadSize }))
 app.use(express.static(__dirname + '/public'))
 app.use('/css/', express.static(__dirname + '/../node_modules/bootstrap/dist/css/'))
 app.use('/js/', express.static(__dirname + '/../node_modules/openpgp/dist/'))
