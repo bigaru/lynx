@@ -1,6 +1,7 @@
 import fs from 'fs'
 import * as pgp from 'openpgp'
 import speakeasy from 'speakeasy'
+import { Request, Response, NextFunction } from 'express'
 
 export default class AuthenticationChecker{
     private pubKey: string
@@ -16,7 +17,7 @@ export default class AuthenticationChecker{
 ${rawSig}
 -----END PGP SIGNATURE-----`
 
-    private async checkSig(plaintext: string, rawSig: string){
+    private checkSig = async (plaintext: string, rawSig: string) => {
         const detachedSig = this.rectifyFormat(rawSig)
         const options = {
             message: pgp.message.fromText(plaintext),
@@ -27,11 +28,11 @@ ${rawSig}
         return (await pgp.verify(options)).signatures[0].valid
     }
 
-    private async checkToken(token: string){
+    private checkToken = async (token: string) => {
         return speakeasy.totp.verify({ secret: this.shared_totp, encoding: 'base32', token })
     }
 
-    async check(authToken: string){
+    check = async (authToken: string) => {
         const authTokenSplit = authToken.split('.')
 
         if(authTokenSplit.length < 2) return false
@@ -40,6 +41,15 @@ ${rawSig}
         const [tokenValid, sigValid] = await Promise.all([this.checkToken(token), this.checkSig(token, sig)])
         
         return tokenValid && sigValid
+    }
+
+    isTokenCorrect = (req: Request, res: Response, next: NextFunction) => {
+        const authToken = req.header('Authorization') || ""
+
+        this.check(authToken).then(authValid => {
+            if(!authValid) res.sendStatus(401)
+            else next()
+        })
     }
 
 }

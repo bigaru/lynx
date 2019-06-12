@@ -1,7 +1,5 @@
-import MongoService from './MongoService';
+import MongoService from './MongoService'
 import { Request, Response } from 'express'
-import AuthenticationChecker from './AuthenticationChecker';
-
 
 interface Memo{
     _id: string,
@@ -11,7 +9,6 @@ interface Memo{
 
 export default class MemoController{
     private dbService: MongoService
-    private authChecker = new AuthenticationChecker()
 
     constructor(mongoService: MongoService){
         this.dbService = mongoService
@@ -32,16 +29,9 @@ export default class MemoController{
     }
 
     getAll = (req: Request, res: Response) => {
-        const authToken = req.header('Authorization') || ""
-
-        this.authChecker.check(authToken).then(authValid => {
-            if(!authValid) res.sendStatus(401)
-            else {
-                this.dbService.getMemos()
-                              .then(memos => res.json(memos))
-                              .catch(err => { res.sendStatus(500) })
-            }
-        })
+        this.dbService.getMemos()
+                        .then(memos => res.json(memos))
+                        .catch(err => { res.sendStatus(500) })
     }
 
 }
