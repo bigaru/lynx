@@ -3,8 +3,12 @@ import * as pgp from 'openpgp'
 import speakeasy from 'speakeasy'
 
 export class AuthenticationChecker{
+    private pubKey: string
+    private shared_totp = process.env.TOTP_KEY || 'ig3t 76td vmok rffh iqgh 7kx5 kp2c ons6'
+
     constructor(){
         pgp.initWorker({ path: '../node_modules/openpgp/dist/openpgp.worker.min.js' })
+        this.pubKey = fs.readFileSync(__dirname + '/public/publicKey.asc', 'utf8')
     }
 
     private rectifyFormat = (rawSig: string) => 
@@ -18,14 +22,14 @@ ${rawSig}
         const options = {
             message: pgp.message.fromText(plaintext),
             signature: await pgp.signature.readArmored(detachedSig),
-            publicKeys: (await pgp.key.readArmored(pubKey)).keys
+            publicKeys: (await pgp.key.readArmored(this.pubKey)).keys
         }
 
         return (await pgp.verify(options)).signatures[0].valid
     }
 
     private async checkToken(token: string){
-        return speakeasy.totp.verify({ secret: shared_totp, encoding: 'base32', token })
+        return speakeasy.totp.verify({ secret: this.shared_totp, encoding: 'base32', token })
     }
 
     async check(authToken: string){
@@ -40,14 +44,3 @@ ${rawSig}
     }
 
 }
-
-
-const shared_totp = process.env.TOTP_KEY || 'ig3t 76td vmok rffh iqgh 7kx5 kp2c ons6'
-const pubKey = fs.readFileSync(__dirname + '/../public/js/publicKey.asc', 'utf8')
-
-export function insertPublicKeyInJS(){
-    const baseLogic = fs.readFileSync(__dirname + '/../public/js/cryptoBase.js', 'utf8')
-    const cryptoJsData = 'const pub_pgp = `' + pubKey + '`; \n' + baseLogic
-    fs.writeFileSync(__dirname + '/../public/js/crypto.js', cryptoJsData)
-}
-

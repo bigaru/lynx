@@ -4,7 +4,8 @@
   "description": "backbone of lynx app",
   "scripts": {
     "start": "node dist/index.js",
-    "build": "tsc",
+    "build": "npm run build:client && tsc",
+    "build:client": "gulp",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,14 +19,17 @@
   },
   "homepage": "https://github.com/bigaru/lynx#readme",
   "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^3.2.7",
+    "openpgp": "^4.5.3",
+    "speakeasy": "^2.0.0"
+  },
+  "devDependencies": {
     "@types/express": "^4.17.0",
     "@types/mongodb": "^3.1.28",
     "@types/openpgp": "^4.4.5",
     "@types/speakeasy": "^2.0.4",
-    "express": "^4.17.1",
-    "mongodb": "^3.2.7",
-    "openpgp": "^4.5.3",
-    "speakeasy": "^2.0.0",
-    "typescript": "^3.5.1"
+    "typescript": "^3.5.1",
+    "gulp": "^4.0.2"
   }
 }

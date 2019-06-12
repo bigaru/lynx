@@ -1,15 +1,13 @@
 import { addIncomings, getIncomings } from './mongoService'
-import { insertPublicKeyInJS, AuthenticationChecker } from './authBundle'
+import { AuthenticationChecker } from './authBundle'
 import express from 'express'
 
 const app = express()
 const port = process.env.PORT || 3000
 const authChecker = new AuthenticationChecker()
 
-insertPublicKeyInJS()
-
 app.use(express.json())
-app.use(express.static('public'))
+app.use(express.static(__dirname + '/public'))
 app.get('/', (req, res) => res.sendFile('index.html'))
 
 app.post('/posts/', (req, res) => {
