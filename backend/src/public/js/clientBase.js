@@ -40,7 +40,7 @@ function encrypt(msg, name){
 function postData(data){
     const toast = document.getElementById("toast")
 
-    fetch('posts/', { 
+    fetch('memos/', { 
         method: 'POST', 
         headers: {'Content-Type': 'application/json' }, 
         body: JSON.stringify(data) 

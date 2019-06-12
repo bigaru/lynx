@@ -1,6 +1,6 @@
 import { MongoClient, Db, Collection } from 'mongodb'
 
-interface Post{
+interface Memo{
     _id: string,
     content: string,
     name: string
@@ -9,25 +9,25 @@ interface Post{
 export default class MongoService{
     private client: MongoClient
     private db: Db
-    private incomings: Collection
+    private memos: Collection
 
     constructor(dbUrl: string, dbName: string){
         this.client = new MongoClient(dbUrl, { useNewUrlParser: true, poolSize: 10 })
 
         this.client.connect().then(client => {
             this.db = client.db(dbName)
-            this.incomings = this.db.collection("incomings")
+            this.memos = this.db.collection("memos")
         })
     }
 
-    addIncomings(document: object): Promise<{ ok: number, n: number }> {
-        return this.incomings.insertOne(document)
-                             .then(writeResult => writeResult.result)
+    addMemo(document: object): Promise<{ ok: number, n: number }> {
+        return this.memos.insertOne(document)
+                         .then(writeResult => writeResult.result)
     }
 
-    getIncomings(): Promise<Post[]>{
-        return this.incomings.find({})
-                             .toArray()
+    getMemos(): Promise<Memo[]>{
+        return this.memos.find({})
+                         .toArray()
     }
 
     close(){

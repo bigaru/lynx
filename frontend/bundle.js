@@ -24,14 +24,14 @@ async function initTotp(encryptedTotp){
     $('#totp').val(plainTotp)
 }
 
-function loadIncomings(data){
-    $('#incoming-body').html("")
+function loadMemos(data){
+    $('#memos-body').html("")
 
     loadedData = data
     let i = 0
 
     for(let d of data){
-        $('#incoming-body').append(`
+        $('#memos-body').append(`
         <tr>
             <td>${d._id}</td>
             <td>${d.name}</td>
@@ -109,10 +109,10 @@ async function getAuthorization(){
 function makeRequest(authToken){
     const headers = new Headers()
     headers.append('Authorization', authToken)
-    const getIncomings = new Request(host + '/posts/', { method: 'GET', headers: headers })
+    const getMemos = new Request(host + '/memos/', { method: 'GET', headers: headers })
     
-    fetch(getIncomings).then(res => {    
-        if(res.ok) res.json().then(loadIncomings)    
+    fetch(getMemos).then(res => {    
+        if(res.ok) res.json().then(loadMemos)    
     })
 }
 
@@ -140,7 +140,7 @@ function loadData(){
 
     getAuthorization()
     .then(makeRequest)
-    .then(() => $('#incoming-tab').tab('show'))
+    .then(() => $('#memos-tab').tab('show'))
 }
 
 $(".custom-file-input").on("change", function() {

@@ -22,12 +22,12 @@ app.use('/js/', express.static(__dirname + '/../node_modules/openpgp/dist/'))
 
 app.get('/', (req, res) => res.sendFile('index.html'))
 
-app.post('/posts/', (req, res) => {
+app.post('/memos/', (req, res) => {
     const body = req.body
     
     if(!body || !body.name || !body.content) res.sendStatus(400)
     else{
-        mongoService.addIncomings(body)
+        mongoService.addMemo(body)
                     .then(result => {
                         if(result.ok) res.status(201).send(body)
                         else res.sendStatus(500)
@@ -36,14 +36,14 @@ app.post('/posts/', (req, res) => {
     }
 })
 
-app.get('/posts/', (req, res) => {
+app.get('/memos/', (req, res) => {
     const authToken = req.header('Authorization') || ""
 
     authChecker.check(authToken).then(authValid => {
         if(!authValid) res.sendStatus(401)
         else {
-            mongoService.getIncomings()
-                        .then(posts => { res.json(posts) })
+            mongoService.getMemos()
+                        .then(memos => { res.json(memos) })
                         .catch(err => { res.sendStatus(500) })
         }
     })
