@@ -20,17 +20,17 @@ export default class MongoService{
         })
     }
 
-    addMemo(document: object): Promise<{ ok: number, n: number }> {
+    addMemo = (document: object): Promise<{ ok: number, n: number }> => {
         return this.memos.insertOne(document)
                          .then(writeResult => writeResult.result)
     }
 
-    getMemos(): Promise<Memo[]>{
+    getMemos = (): Promise<Memo[]> => {
         return this.memos.find({})
                          .toArray()
     }
 
-    close(){
+    close = () => {
         this.client.close()
     }
 }

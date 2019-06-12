@@ -1,14 +1,14 @@
 import MongoService from './MongoService'
-import AuthenticationChecker from './AuthenticationChecker'
 import express from 'express'
+import MemoController from './MemoController';
 
 const app = express()
 const port = process.env.PORT || 3000
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017'
 const dbName = 'encryptedData'
 
-const authChecker = new AuthenticationChecker()
 const mongoService = new MongoService(dbUrl, dbName)
+const memoController = new MemoController(mongoService)
 
 process.on('SIGINT', () => {
     mongoService.close()
@@ -22,32 +22,8 @@ app.use('/js/', express.static(__dirname + '/../node_modules/openpgp/dist/'))
 
 app.get('/', (req, res) => res.sendFile('index.html'))
 
-app.post('/memos/', (req, res) => {
-    const body = req.body
-    
-    if(!body || !body.name || !body.content) res.sendStatus(400)
-    else{
-        mongoService.addMemo(body)
-                    .then(result => {
-                        if(result.ok) res.status(201).send(body)
-                        else res.sendStatus(500)
-                    })
-                    .catch(err => { res.sendStatus(500) })
-    }
-})
-
-app.get('/memos/', (req, res) => {
-    const authToken = req.header('Authorization') || ""
-
-    authChecker.check(authToken).then(authValid => {
-        if(!authValid) res.sendStatus(401)
-        else {
-            mongoService.getMemos()
-                        .then(memos => { res.json(memos) })
-                        .catch(err => { res.sendStatus(500) })
-        }
-    })
-})
+app.post('/memos/', memoController.addOne)
+app.get('/memos/', memoController.getAll)
 
 app.all("/*",(req, res) => res.sendStatus(404))
 
