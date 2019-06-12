@@ -6,7 +6,6 @@ const fs = require('fs')
 const { machineIdSync } =  require('node-machine-id')
 
 const machineId = machineIdSync({original: true})
-openpgp.initWorker({ path:'node_modules/openpgp/dist/openpgp.worker.min.js' })
 let privKeyObj, keyPath, host, totp, loadedData
 
 host = localStorage.getItem('host')

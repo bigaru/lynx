@@ -23,9 +23,7 @@ function sendMsg(){
     }
 }
 
-function init(){
-    openpgp.initWorker({ path:'js/openpgp.worker.min.js' })
-    
+function init(){    
     openpgp.key.readArmored(pub_pgp).then(pubKeyObj => {
         key = pubKeyObj.keys
     })

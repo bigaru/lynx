@@ -7,7 +7,6 @@ export default class AuthenticationChecker{
     private shared_totp = process.env.TOTP_KEY || 'ig3t 76td vmok rffh iqgh 7kx5 kp2c ons6'
 
     constructor(){
-        pgp.initWorker({ path: '../node_modules/openpgp/dist/openpgp.worker.min.js' })
         this.pubKey = fs.readFileSync(__dirname + '/public/publicKey.asc', 'utf8')
     }
 
