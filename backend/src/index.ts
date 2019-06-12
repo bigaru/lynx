@@ -1,14 +1,23 @@
-import { addIncomings, getIncomings } from './mongoService'
+import MongoService from './MongoService'
 import AuthenticationChecker from './AuthenticationChecker'
 import express from 'express'
 
 const app = express()
 const port = process.env.PORT || 3000
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017'
+const dbName = 'encryptedData'
+
 const authChecker = new AuthenticationChecker()
+const mongoService = new MongoService(dbUrl, dbName)
+
+process.on('SIGINT', () => {
+    mongoService.close()
+    process.exit()
+})
 
 app.use(express.json())
 app.use(express.static(__dirname + '/public'))
-app.use('/css/bootstrap.css', express.static(__dirname + '/../node_modules/bootstrap/dist/css/bootstrap.min.css'))
+app.use('/css/', express.static(__dirname + '/../node_modules/bootstrap/dist/css/'))
 app.use('/js/', express.static(__dirname + '/../node_modules/openpgp/dist/'))
 
 app.get('/', (req, res) => res.sendFile('index.html'))
@@ -18,12 +27,12 @@ app.post('/posts/', (req, res) => {
     
     if(!body || !body.name || !body.content) res.sendStatus(400)
     else{
-
-        addIncomings(body, result => {
-            if(result.result.ok) res.status(201).send(body)
-            else res.sendStatus(500)            
-        })
-
+        mongoService.addIncomings(body)
+                    .then(result => {
+                        if(result.ok) res.status(201).send(body)
+                        else res.sendStatus(500)
+                    })
+                    .catch(err => { res.sendStatus(500) })
     }
 })
 
@@ -31,11 +40,11 @@ app.get('/posts/', (req, res) => {
     const authToken = req.header('Authorization') || ""
 
     authChecker.check(authToken).then(authValid => {
-        if (!authValid) res.sendStatus(401)
+        if(!authValid) res.sendStatus(401)
         else {
-            getIncomings(result => {
-                res.json(result)
-            })
+            mongoService.getIncomings()
+                        .then(posts => { res.json(posts) })
+                        .catch(err => { res.sendStatus(500) })
         }
     })
 })
