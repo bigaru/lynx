@@ -8,6 +8,9 @@ const authChecker = new AuthenticationChecker()
 
 app.use(express.json())
 app.use(express.static(__dirname + '/public'))
+app.use('/css/bootstrap.css', express.static(__dirname + '/../node_modules/bootstrap/dist/css/bootstrap.min.css'))
+app.use('/js/', express.static(__dirname + '/../node_modules/openpgp/dist/'))
+
 app.get('/', (req, res) => res.sendFile('index.html'))
 
 app.post('/posts/', (req, res) => {

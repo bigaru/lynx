@@ -21,8 +21,7 @@ function createDirIfMissing(path){
 
 function copyAssets(cb) {
     gulp.src('./src/public/*').pipe(gulp.dest('./dist/public/'))
-    gulp.src('./src/public/js/*').pipe(gulp.dest('./dist/public/js'))
-
+    
     cb()
 }
 

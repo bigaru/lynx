@@ -1,39 +1,42 @@
 
 let key = null;
+init()
 
 function sendFile(){
     const file = document.getElementById("file").files[0];
     
     if(file){
         const reader = new FileReader();
-        reader.onload = () => start(reader.result, file.name);
+        reader.onload = () => { 
+            const msg = openpgp.message.fromBinary(new Uint8Array(reader.result))
+            encrypt(msg, file.name)
+        }
         reader.readAsArrayBuffer(file);
     }
 }
 
 function sendMsg(){
     const content = document.getElementById("msgBox").value.trim();
-    if(content.length > 0) start(content, makeid(10) + ".txt");
+    if(content.length > 0) {
+        const msg = openpgp.message.fromText(content)
+        encrypt(msg, makeid(10) + ".txt")
+    }
 }
 
-function start(content, name){
-    if(!key) loadKey(content, name);
-    else     encrypt(content, name);
-}
-
-function loadKey(msg, name){
-    kbpgp.KeyManager.import_from_armored_pgp({armored: pub_pgp}, (err, p_key) => {
-        if (!err) {
-            key = p_key;
-            encrypt(msg, name);
-        }
-    });
+function init(){
+    openpgp.initWorker({ path:'js/openpgp.worker.min.js' })
+    
+    openpgp.key.readArmored(pub_pgp).then(pubKeyObj => {
+        key = pubKeyObj.keys
+    })
 }
 
 function encrypt(msg, name){
-    kbpgp.box({ msg, encrypt_for: key }, (err, result_string, result_buffer) => {
-        postData({ content: result_string, name })
-    });
+    const options = { message: msg, publicKeys: key, armor: true }
+
+    openpgp.encrypt(options).then(ciphertext => {
+        postData({ content:  ciphertext.data, name })
+    })
 }
 
 function postData(data){
