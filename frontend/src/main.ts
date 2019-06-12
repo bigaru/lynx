@@ -1,6 +1,6 @@
-const { app, BrowserWindow } = require('electron')
+import { app, BrowserWindow } from 'electron'
 
-let win
+let win: BrowserWindow | null
 
 function createWindow () {
   win = new BrowserWindow({
@@ -11,11 +11,12 @@ function createWindow () {
     }
   })
 
-  win.loadFile('index.html')
+  win.loadFile(__dirname + '/../index.html')
   win.setMenuBarVisibility(false)
   
-  // Open the DevTools.
-  //win.webContents.openDevTools()
+  if (process.env.NODE_ENV === 'development'){
+    win.webContents.openDevTools()
+  }
 
   // Emitted when the window is closed.
   win.on('closed', () => { win = null })

@@ -1,30 +1,38 @@
-window.$ = window.jQuery = require('jquery')
-window.Bootstrap = require('bootstrap')
-const speakeasy = require('speakeasy')
-const openpgp = require('openpgp')
-const fs = require('fs')
-const { machineIdSync } =  require('node-machine-id')
+import speakeasy from 'speakeasy'
+import * as pgp from 'openpgp'
+import fs from 'fs'
+import { machineIdSync } from 'node-machine-id'
 
-const machineId = machineIdSync({original: true})
-let privKeyObj, keyPath, host, totp, loadedData
+interface Memo{
+    _id: string,
+    name: string,
+    content: string
+}
 
-host = localStorage.getItem('host')
-$('#host').val(host)
-initTotp(localStorage.getItem('totp'))
+const machineId = machineIdSync(true)
+let privKeyObj: pgp.key.Key
+let keyPath: string
+let plainTotp: string
+let loadedData: Memo[]
 
-async function initTotp(encryptedTotp){
-    const opt = { 
-        message: await openpgp.message.readArmored(encryptedTotp),
+let host = localStorage.getItem('host')
+const encryptedTotp = localStorage.getItem('totp')
+
+if (host) $('#host').val(host)
+if (encryptedTotp) initTotp(encryptedTotp)
+
+async function initTotp(encryptedTotp: string){
+    const opt: pgp.DecryptOptions = { 
+        message: await pgp.message.readArmored(encryptedTotp),
         passwords: machineId,
         format: 'utf8' 
     }
     
-    const plainTotp = (await openpgp.decrypt(opt)).data
-    totp = plainTotp
+    plainTotp = (await pgp.decrypt(opt)).data as string
     $('#totp').val(plainTotp)
 }
 
-function loadMemos(data){
+function loadMemos(data: Memo[]){
     $('#memos-body').html("")
 
     loadedData = data
@@ -47,18 +55,18 @@ function loadMemos(data){
     }
 }
 
-async function decryptPost(idx){
+async function decryptPost(idx: number){
     const post = loadedData[idx] 
-    const decOpt = {
-        message: await openpgp.message.readArmored(post.content),
+    const decOpt: pgp.DecryptOptions = {
+        message: await pgp.message.readArmored(post.content),
         privateKeys: [privKeyObj],
         format: 'binary'
     }
-    const plaintext = (await openpgp.decrypt(decOpt)).data;
+    const plaintext = (await pgp.decrypt(decOpt)).data as Uint8Array;
     download(plaintext, post.name)
 }
 
-function download(binary, filename){
+function download(binary: Uint8Array, filename: string){
     var a = window.document.createElement('a');
     a.href = window.URL.createObjectURL(new Blob([binary]));
     a.download = filename;
@@ -69,34 +77,34 @@ function download(binary, filename){
     document.body.removeChild(a);
 }
 
-async function signDetached(plaintext){
+async function signDetached(plaintext: string){
     const key = $('#privateKey').prop('files')[0]
 
     if(!privKeyObj || keyPath !== key.path){
         keyPath = key.path
         const privKey = fs.readFileSync(keyPath, 'utf8')
-        privKeyObj = (await openpgp.key.readArmored(privKey)).keys[0];
+        privKeyObj = (await pgp.key.readArmored(privKey)).keys[0];
 
-        const passphrase = $('#password').val()
+        const passphrase = $('#password').val() as string
         await privKeyObj.decrypt(passphrase);
     }
 
     const options = {
-        message: openpgp.message.fromText(plaintext),
+        message: pgp.message.fromText(plaintext),
         privateKeys: [privKeyObj],
         armor: true,
         detached: true,
     };
     
-    const sig = (await openpgp.sign(options)).signature
+    const sig = (await pgp.sign(options)).signature as string
     const sigWithoutSpace = sig.replace(/[\r\n\t\f\v]/g,'')
-    const match = sigWithoutSpace.match(/org([^-]*)/)
+    const match = sigWithoutSpace.match(/org([^-]*)/)!
 
     return match[1];
 }
 
 function getToken(){
-    return speakeasy.totp({ secret: totp, encoding: 'base32'})
+    return speakeasy.totp({ secret: plainTotp, encoding: 'base32'})
 }
 
 async function getAuthorization(){
@@ -106,7 +114,7 @@ async function getAuthorization(){
     return token + "." + signature
 }
 
-function makeRequest(authToken){
+function makeRequest(authToken: string){
     const headers = new Headers()
     headers.append('Authorization', authToken)
     const getMemos = new Request(host + '/memos/', { method: 'GET', headers: headers })
@@ -117,24 +125,24 @@ function makeRequest(authToken){
 }
 
 function loadData(){
-    const URL = $('#host').val()
-    const shared_totp = $('#totp').val()
+    const URL = $('#host').val() as string
+    const shared_totp = $('#totp').val() as string
     
     if(URL !== host) {
         host = URL
         localStorage.setItem('host', URL)
     }
 
-    if(shared_totp !== totp) {
-        totp = shared_totp
+    if(shared_totp !== plainTotp) {
+        plainTotp = shared_totp
         const opt = {
-            message: openpgp.message.fromText(shared_totp),
+            message: pgp.message.fromText(shared_totp),
             passwords: machineId,
             armor: true
         }
 
-        openpgp.encrypt(opt).then((encryptedTotp) => {
-            localStorage.setItem('totp', encryptedTotp.data)
+        pgp.encrypt(opt).then((encryptedTotp) => {
+            localStorage.setItem('totp', encryptedTotp.data as string)
         })
     }
 
@@ -144,6 +152,6 @@ function loadData(){
 }
 
 $(".custom-file-input").on("change", function() {
-    var fileName = $(this).val().split("\\").pop()
+    const fileName = ($(this).val()! as string).split("\\").pop()!
     $(this).siblings(".custom-file-label").addClass("selected").html(fileName)
 })

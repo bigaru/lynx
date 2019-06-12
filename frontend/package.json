@@ -2,20 +2,28 @@
   "name": "lynx-frontend",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron ./dist/main.js",
+    "build": "tsc",
+    "dev": "npm run build && NODE_ENV=development npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bootstrap": "^4.3.1",
-    "electron": "^5.0.2",
     "jquery": "^3.4.1",
     "node-machine-id": "^1.1.12",
     "openpgp": "^4.5.3",
     "popper.js": "^1.15.0",
     "speakeasy": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/bootstrap": "^4.3.0",
+    "@types/jquery": "^3.3.29",
+    "@types/openpgp": "^4.4.5",
+    "@types/speakeasy": "^2.0.4",
+    "electron": "^5.0.2",
+    "typescript": "^3.5.1"
   }
 }
