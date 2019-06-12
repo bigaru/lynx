@@ -2,7 +2,7 @@ import fs from 'fs'
 import * as pgp from 'openpgp'
 import speakeasy from 'speakeasy'
 
-export class AuthenticationChecker{
+export default class AuthenticationChecker{
     private pubKey: string
     private shared_totp = process.env.TOTP_KEY || 'ig3t 76td vmok rffh iqgh 7kx5 kp2c ons6'
 

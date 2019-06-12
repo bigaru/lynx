@@ -1,5 +1,5 @@
 import { addIncomings, getIncomings } from './mongoService'
-import { AuthenticationChecker } from './authBundle'
+import AuthenticationChecker from './AuthenticationChecker'
 import express from 'express'
 
 const app = express()
