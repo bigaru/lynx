@@ -1,55 +1,52 @@
 /// <reference path="../../../node_modules/@types/openpgp/index.d.ts" />
 /// <reference path="../../../node_modules/@types/pako/index.d.ts" />
 
+type Message = openpgp.message.Message
+type Key = openpgp.key.Key[]
+
+class CryptoHelper{
+    private key: Key
+
+    constructor(){
+        openpgp.key.readArmored(pub_pgp).then(pubKeyObj => {
+            this.key = pubKeyObj.keys
+        })
+    }
+
+    encryptMessage = (buffer: Uint8Array | string) => {
+        let msg: Message
+        
+        if(typeof buffer === 'string') msg = openpgp.message.fromText(buffer)
+        else                           msg = openpgp.message.fromBinary(buffer)
+        
+        return this.encrypt(msg);
+    }
+
+    
+    private encrypt = (msg: Message): Promise<string> => {
+        const options: openpgp.EncryptOptions = { 
+            message: msg,
+            publicKeys: this.key,
+            armor: true 
+        }
+
+        return openpgp.encrypt(options).then(ciphertext => ciphertext.data)
+    }
+}
+
 const pub_pgp = ''
 let key: openpgp.key.Key[]
-init()
 
-function sendFile(){
-    const input = document.getElementById('file') as HTMLInputElement
-    const file = input.files![0]
-    
-    if(file){
-        const reader = new FileReader()
-        reader.onload = () => { 
-            const msg = openpgp.message.fromBinary(new Uint8Array(reader.result as ArrayBuffer))
-            encrypt(msg, file.name)
-        }
-        reader.readAsArrayBuffer(file)
-    }
-}
+const cryptoHelper = new CryptoHelper()
 
-function sendMsg(){
-    const input = document.getElementById('msgBox')! as HTMLInputElement
-    const content = input.value.trim()
-
-    if(content.length > 0) {
-        const msg = openpgp.message.fromText(content)
-        encrypt(msg, makeid(10) + '.txt')
-    }
-}
-
-function init(){    
-    openpgp.key.readArmored(pub_pgp).then(pubKeyObj => {
-        key = pubKeyObj.keys
-    })
-}
-
-function encrypt(msg: openpgp.message.Message, name: string){
-    const options: openpgp.EncryptOptions = { message: msg, publicKeys: key, armor: true }
-
-    openpgp.encrypt(options).then(ciphertext => {
-        postData({ content:  ciphertext.data, name })
-    })
-}
-
-function postData(data: object){
+const postMsg = (name: string) => (msg: string) => {
+    const httpBody = { content: msg, name }
     const toast = document.getElementById('toast') as HTMLDivElement
 
     fetch('memos/', { 
         method: 'POST', 
         headers: {'Content-Type': 'application/json', 'Content-Encoding': 'gzip' },
-        body: pako.gzip(JSON.stringify(data))
+        body: pako.gzip(JSON.stringify(httpBody))
     })
     .then(response => {
         if(response.status === 201){ 
@@ -66,6 +63,37 @@ function postData(data: object){
             toast.className = ''
         }, 4000)
     })
+}
+
+function sendFile(){
+    const input = document.getElementById('file') as HTMLInputElement
+    
+    if(input.files && input.files[0]){
+        const file = input.files![0]
+        const reader = new FileReader()
+
+        reader.onload = () => { 
+            const binary = new Uint8Array(reader.result as ArrayBuffer)
+            const postMsgWithName = postMsg(file.name)
+            
+            cryptoHelper.encryptMessage(binary)
+                        .then(postMsgWithName)
+        }
+
+        reader.readAsArrayBuffer(file)
+    }
+}
+
+function sendMsg(){
+    const input = document.getElementById('msgBox')! as HTMLInputElement
+    const content = input.value.trim()
+
+    if(content.length > 0) {
+        const postMsgWithName = postMsg(makeid(10) + '.txt')
+
+        cryptoHelper.encryptMessage(content)
+                    .then(postMsgWithName)
+    }
 }
 
 function makeid(length: number) {
