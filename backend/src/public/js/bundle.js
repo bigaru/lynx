@@ -1,25 +1,25 @@
-
-let key = null;
+const pub_pgp = ''
+let key = null
 init()
 
 function sendFile(){
-    const file = document.getElementById("file").files[0];
+    const file = document.getElementById('file').files[0]
     
     if(file){
-        const reader = new FileReader();
+        const reader = new FileReader()
         reader.onload = () => { 
             const msg = openpgp.message.fromBinary(new Uint8Array(reader.result))
             encrypt(msg, file.name)
         }
-        reader.readAsArrayBuffer(file);
+        reader.readAsArrayBuffer(file)
     }
 }
 
 function sendMsg(){
-    const content = document.getElementById("msgBox").value.trim();
+    const content = document.getElementById('msgBox').value.trim()
     if(content.length > 0) {
         const msg = openpgp.message.fromText(content)
-        encrypt(msg, makeid(10) + ".txt")
+        encrypt(msg, makeid(10) + '.txt')
     }
 }
 
@@ -38,7 +38,7 @@ function encrypt(msg, name){
 }
 
 function postData(data){
-    const toast = document.getElementById("toast")
+    const toast = document.getElementById('toast')
 
     fetch('memos/', { 
         method: 'POST', 
@@ -63,10 +63,10 @@ function postData(data){
 }
 
 function makeid(length) {
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = ''
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
     for ( let i = 0; i < length; i++ ) {
-       result += characters.charAt(Math.floor(Math.random() * characters.length));
+       result += characters.charAt(Math.floor(Math.random() * characters.length))
     }
-    return result;
+    return result
  }

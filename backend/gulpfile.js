@@ -1,5 +1,6 @@
 const gulp = require('gulp')
 const terser = require('gulp-terser')
+const replace = require('gulp-replace')
 const fs = require('fs-extra')
 
 function clean(cb){
@@ -9,21 +10,17 @@ function clean(cb){
 }
 
 function importKey (cb) {
-    const pubKey = fs.readFileSync(__dirname + '/src/public/publicKey.asc', 'utf8')
-    const baseLogic = fs.readFileSync(__dirname + '/src/public/js/clientBase.js', 'utf8')
-    const bundleData = 'const pub_pgp = `' + pubKey + '`; \n' + baseLogic
-
     fs.ensureDirSync(__dirname + '/dist/public/js/')
-    fs.writeFileSync(__dirname + '/dist/public/js/bundle.js', bundleData)
 
-    cb()
-}
+    const pubKey = fs.readFileSync(__dirname + '/src/public/publicKey.asc', 'utf8')
+    const pubKeyJs = 'const pub_pgp = `' + pubKey + '` \n'
 
-function uglifyClient(cb){
-    gulp.src('./dist/public/js/bundle.js')
+    const anchor = "const pub_pgp = ''";
+    gulp.src('./src/public/js/bundle.js')
+        .pipe(replace(anchor, pubKeyJs))
         .pipe(terser())
-        .pipe(gulp.dest('./dist/public/js'))
-    
+        .pipe(gulp.dest('./dist/public/js'));
+
     cb()
 }
 
@@ -33,4 +30,5 @@ function copyAssets(cb) {
     cb()
 }
 
-exports.default = gulp.series(clean, importKey, uglifyClient, copyAssets)
+exports.clean = clean
+exports.afterBurn = gulp.series(importKey, copyAssets)
