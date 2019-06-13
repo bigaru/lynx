@@ -1,14 +1,18 @@
+/// <reference path="../../../node_modules/@types/openpgp/index.d.ts" />
+/// <reference path="../../../node_modules/@types/pako/index.d.ts" />
+
 const pub_pgp = ''
-let key = null
+let key: openpgp.key.Key[]
 init()
 
 function sendFile(){
-    const file = document.getElementById('file').files[0]
+    const input = document.getElementById('file') as HTMLInputElement
+    const file = input.files![0]
     
     if(file){
         const reader = new FileReader()
         reader.onload = () => { 
-            const msg = openpgp.message.fromBinary(new Uint8Array(reader.result))
+            const msg = openpgp.message.fromBinary(new Uint8Array(reader.result as ArrayBuffer))
             encrypt(msg, file.name)
         }
         reader.readAsArrayBuffer(file)
@@ -16,7 +20,9 @@ function sendFile(){
 }
 
 function sendMsg(){
-    const content = document.getElementById('msgBox').value.trim()
+    const input = document.getElementById('msgBox')! as HTMLInputElement
+    const content = input.value.trim()
+
     if(content.length > 0) {
         const msg = openpgp.message.fromText(content)
         encrypt(msg, makeid(10) + '.txt')
@@ -29,16 +35,16 @@ function init(){
     })
 }
 
-function encrypt(msg, name){
-    const options = { message: msg, publicKeys: key, armor: true }
+function encrypt(msg: openpgp.message.Message, name: string){
+    const options: openpgp.EncryptOptions = { message: msg, publicKeys: key, armor: true }
 
     openpgp.encrypt(options).then(ciphertext => {
         postData({ content:  ciphertext.data, name })
     })
 }
 
-function postData(data){
-    const toast = document.getElementById('toast')
+function postData(data: object){
+    const toast = document.getElementById('toast') as HTMLDivElement
 
     fetch('memos/', { 
         method: 'POST', 
@@ -62,7 +68,7 @@ function postData(data){
     })
 }
 
-function makeid(length) {
+function makeid(length: number) {
     let result = ''
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
     for ( let i = 0; i < length; i++ ) {
