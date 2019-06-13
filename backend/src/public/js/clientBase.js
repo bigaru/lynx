@@ -54,6 +54,11 @@ function postData(data){
             toast.innerHTML = 'failed'
             toast.className = 'alert alert-danger'
         }
+
+        setTimeout(() => {
+            toast.innerHTML = ''
+            toast.className = ''
+        }, 4000)
     })
 }
 
