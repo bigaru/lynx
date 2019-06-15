@@ -50,16 +50,16 @@ const postMsg = (name: string) => (msg: string) => {
     })
     .then(response => {
         if(response.status === 201){ 
-            toast.innerHTML = 'message successfully transmitted'
+            toast.textContent = 'message successfully transmitted'
             toast.className = 'alert alert-success'
         }
         else{
-            toast.innerHTML = 'failed'
+            toast.textContent = 'failed'
             toast.className = 'alert alert-danger'
         }
 
         setTimeout(() => {
-            toast.innerHTML = ''
+            toast.textContent = ''
             toast.className = ''
         }, 4000)
     })
