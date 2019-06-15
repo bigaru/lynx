@@ -21,7 +21,6 @@
   "dependencies": {
     "bootstrap": "^4.3.1",
     "express": "^4.17.1",
-    "fs-extra": "^8.0.1",
     "mongodb": "^3.2.7",
     "openpgp": "^4.5.3",
     "pako": "^1.0.10",
@@ -33,6 +32,7 @@
     "@types/openpgp": "^4.4.5",
     "@types/pako": "^1.0.1",
     "@types/speakeasy": "^2.0.4",
+    "fs-extra": "^8.0.1",
     "gulp": "^4.0.2",
     "gulp-replace": "^1.0.0",
     "gulp-terser": "^1.2.0",
