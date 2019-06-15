@@ -1,7 +1,8 @@
 import MongoService from './MongoService'
-import express, { Request, Response, NextFunction } from 'express'
+import express from 'express'
 import MemoController from './MemoController'
 import AuthenticationChecker from './AuthenticationChecker'
+import SecurityHeaders from './SecurityHeaders'
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -18,11 +19,7 @@ process.on('SIGINT', () => {
     process.exit()
 })
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-    res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self'; object-src 'none';")
-    next()
-})
-
+app.use(SecurityHeaders)
 app.use(express.json({ limit: payLoadSize }))
 app.use(express.static(__dirname + '/public'))
 app.use('/css/', express.static(__dirname + '/../node_modules/bootstrap/dist/css/'))
