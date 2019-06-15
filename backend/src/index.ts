@@ -1,5 +1,5 @@
 import MongoService from './MongoService'
-import express from 'express'
+import express, { Request, Response, NextFunction } from 'express'
 import MemoController from './MemoController'
 import AuthenticationChecker from './AuthenticationChecker'
 
@@ -16,6 +16,11 @@ const memoController = new MemoController(mongoService)
 process.on('SIGINT', () => {
     mongoService.close()
     process.exit()
+})
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+    res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self'; object-src 'none';")
+    next()
 })
 
 app.use(express.json({ limit: payLoadSize }))

@@ -9,10 +9,9 @@
   <script src="js/pako.min.js"></script> 
   <script src="js/bundle.js"></script> 
 </head>
-<body class="bg-dark" style="min-height: 100vh">
-
+<body class="bg-dark min-vh-100">
 <div class="container">
-  <div class="d-flex flex-column justify-content-center" style="min-height: 80vh">
+  <div class="d-flex flex-column justify-content-center min-vh-100">
     <div class="card">
         <div class="card-header">
             <h1>Lynx</h1>
@@ -30,8 +29,8 @@
                 <input type="file" id="file">
             </div>
             <div>
-                <button type="submit" onclick="sendMsg()" class="btn btn-outline-primary">send message</button>
-                <button type="submit" onclick="sendFile()" class="btn btn-outline-primary">send file</button>
+                <button type="submit" id="btnSendMsg" class="btn btn-outline-primary">send message</button>
+                <button type="submit" id="btnSendFile" class="btn btn-outline-primary">send file</button>
             </div>
         </div>
     </div>

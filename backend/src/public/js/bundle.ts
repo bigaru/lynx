@@ -1,6 +1,14 @@
 /// <reference path="../../../node_modules/@types/openpgp/index.d.ts" />
 /// <reference path="../../../node_modules/@types/pako/index.d.ts" />
 
+document.addEventListener('DOMContentLoaded', event => { 
+    const btnSendMsg = document.getElementById('btnSendMsg')
+    const btnSendFile = document.getElementById('btnSendFile')
+    
+    if (btnSendMsg) btnSendMsg.addEventListener('click', sendMsg)
+    if (btnSendFile) btnSendFile.addEventListener('click', sendFile)
+})
+
 type Message = openpgp.message.Message
 type Key = openpgp.key.Key[]
 
@@ -22,7 +30,6 @@ class CryptoHelper{
         return this.encrypt(msg);
     }
 
-    
     private encrypt = (msg: Message): Promise<string> => {
         const options: openpgp.EncryptOptions = { 
             message: msg,
@@ -102,4 +109,4 @@ function makeid(length: number) {
 
     return Array.from(Array(length), randFn)
                 .reduce((a, b) => a + b)
- }
+}
