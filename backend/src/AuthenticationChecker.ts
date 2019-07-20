@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from 'express'
 
 export default class AuthenticationChecker{
     private pubKey: string
-    private shared_totp = process.env.TOTP_KEY || 'ig3t 76td vmok rffh iqgh 7kx5 kp2c ons6'
+    private shared_totp = process.env.TOTP_KEY || 'bc0884f8ad2f3a6ef80c1bc73fbd11042688092e'
 
     constructor(){
         this.pubKey = fs.readFileSync(__dirname + '/public/publicKey.asc', 'utf8')
@@ -29,7 +29,7 @@ ${rawSig}
     }
 
     private checkToken = async (token: string) => {
-        return speakeasy.totp.verify({ secret: this.shared_totp, encoding: 'base32', token })
+        return speakeasy.totp.verify({ secret: this.shared_totp, encoding: 'hex', token })
     }
 
     check = async (authToken: string) => {
