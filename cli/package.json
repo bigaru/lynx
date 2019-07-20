@@ -11,14 +11,17 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/fs-extra": "^8.0.0",
+    "@types/minimist": "^1.2.0",
     "@types/openpgp": "^4.4.6",
     "@types/speakeasy": "^2.0.4",
-    "fs-extra": "^8.1.0",
     "gulp": "^4.0.2",
     "gulp-chmod": "^3.0.0",
     "typescript": "^3.5.3"
   },
   "dependencies": {
+    "fs-extra": "^8.1.0",
+    "minimist": "^1.2.0",
     "openpgp": "^4.5.5",
     "speakeasy": "^2.0.0"
   }
