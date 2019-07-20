@@ -1,0 +1,25 @@
+{
+  "name": "lynx-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "dist/./app.js",
+    "build": "gulp clean && tsc && gulp makeExec",
+    "clean": "gulp clean"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/openpgp": "^4.4.6",
+    "@types/speakeasy": "^2.0.4",
+    "fs-extra": "^8.1.0",
+    "gulp": "^4.0.2",
+    "gulp-chmod": "^3.0.0",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "openpgp": "^4.5.5",
+    "speakeasy": "^2.0.0"
+  }
+}
