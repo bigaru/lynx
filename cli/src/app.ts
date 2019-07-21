@@ -6,20 +6,13 @@ import speakeasy from 'speakeasy'
 import * as pgp from 'openpgp'
 import axios from 'axios'
 import table from 'text-table'
+import { Config, ConfigService } from './ConfigService';
 
 enum CMD {
     INIT = 'init',
     HELP = 'help',
     FETCH = 'fetch',
     DECRYPT = 'decrypt',
-}
-
-const configPath = process.env.HOME + '/.config/in.abaddon/lynx/config.json'
-interface Config {
-    host: string,
-    totp: string,
-    key: string,
-    password: string
 }
 
 interface Memo {
@@ -37,7 +30,7 @@ if(process.argv.length > 2){
             break
 
         case CMD.FETCH: 
-            getConfig().then(config => { 
+            ConfigService.get().then(config => { 
                 getAuthorization(config)
                  .then(authToken => makeRequest(config, authToken))
                  .then(memos => memos.map(m => [m._id, m.name]))
@@ -52,8 +45,8 @@ if(process.argv.length > 2){
             break
 
         case CMD.DECRYPT: 
+            break
         case CMD.HELP: 
-
             break;
     }
     
@@ -66,24 +59,16 @@ function init(){
         alias: { h: 'host', t: 'totp', k: 'key', p:'password' },
         default: { h: 'http://localhost:3000' }
     }
+    
     const args = minimist(process.argv.slice(3), opts)
     const { host, totp, key, password } = args;
     
-    if(host && totp && key && password){
-        fs.outputJSONSync(configPath, { host, totp, key, password })
-    }else{
+    const config: Config = { host, totp, key, password }
+    const isSaveSuccessful = ConfigService.save(config);
+    
+    if (!isSaveSuccessful) {
         console.log("Usage: lynx init --host <URL> --totp <secret key> --key <priv key path> --password <pw>")
     }
-}
-
-async function getConfig(): Promise<Config>{
-    return fs.readJSON(configPath).then((c: Config) => {
-        if(!c.host || !c.totp || !c.key || !c.password) {
-            throw new Error("not initialized")
-        }
-
-        return c;
-    })
 }
 
 async function getToken(config: Config){
