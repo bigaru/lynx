@@ -1,11 +1,8 @@
 #!/usr/bin/env node
 
 import minimist from 'minimist'
-import fs from 'fs-extra'
-import speakeasy from 'speakeasy'
-import * as pgp from 'openpgp'
-import axios from 'axios'
 import table from 'text-table'
+import { BackendService } from './BackendService'
 import { Config, ConfigService } from './ConfigService';
 
 enum CMD {
@@ -13,12 +10,6 @@ enum CMD {
     HELP = 'help',
     FETCH = 'fetch',
     DECRYPT = 'decrypt',
-}
-
-interface Memo {
-    _id: string,
-    content: string,
-    name: string
 }
 
 if(process.argv.length > 2){
@@ -30,18 +21,10 @@ if(process.argv.length > 2){
             break
 
         case CMD.FETCH: 
-            ConfigService.get().then(config => { 
-                getAuthorization(config)
-                 .then(authToken => makeRequest(config, authToken))
-                 .then(memos => memos.map(m => [m._id, m.name]))
-                 .then(m => {
-                     m.unshift(['ID', 'Filename'])
-                     return m;
-                 })
-                 .then(table)
-                 .then(console.log)
-            })
-
+            ConfigService
+             .get()
+             .then(showMemos)
+             .catch((e: Error) => console.error(e.message))
             break
 
         case CMD.DECRYPT: 
@@ -71,41 +54,14 @@ function init(){
     }
 }
 
-async function getToken(config: Config){
-    return speakeasy.totp({ secret: config.totp, encoding: 'hex'})
+function showMemos(config: Config) {
+    BackendService.fetchAll(config)
+    .then(memos => memos.map(m => [m._id, m.name]))
+    .then(m => {
+        m.unshift(['ID', 'Filename'])
+        return m;
+    })
+    .then(table)
+    .then(console.log)
 }
 
-async function getAuthorization(config: Config){
-    const token = await getToken(config)
-    const signature = await signDetached(config, token)
-    
-    return token + "." + signature
-}
-
-async function signDetached(config: Config, plaintext: string){
-
-    const privKeyObj = await fs.readFile(config.key, 'utf8')
-                     .then(privKey => pgp.key.readArmored(privKey))
-                     .then(o => o.keys[0])
-
-    await privKeyObj.decrypt(config.password);
-
-    const options = {
-        message: pgp.message.fromText(plaintext),
-        privateKeys: [privKeyObj],
-        armor: true,
-        detached: true,
-    };
-    
-    const sig = (await pgp.sign(options)).signature as string
-    const sigWithoutSpace = sig.replace(/[\r\n\t\f\v]/g,'')
-    const match = sigWithoutSpace.match(/org([^-]*)/)!
-
-    return match[1];
-}
-
-async function makeRequest(config: Config, authToken: string){
-     return axios
-      .get<Memo[]>(config.host + '/memos', { headers: { Authorization : authToken } })
-      .then(res => res.data)
-}

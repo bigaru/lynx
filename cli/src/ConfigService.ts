@@ -38,7 +38,7 @@ export class ConfigService{
             return config;
         }
     
-        throw new Error('not initialized')
+        throw new Error('Lynx is not initialized')
     }
 
 }
