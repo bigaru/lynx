@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import keytar from 'keytar'
 
-const configPath = process.env.HOME + '/.config/in.abaddon/lynx/config.json'
+const configPath = process.env.HOME + '/.config/in.abaddon.lynx/config.json'
 
 export interface Config {
     host: string,
@@ -11,18 +11,13 @@ export interface Config {
 }
 
 export class ConfigService{
-    static save(config: Config): boolean {
+    static save(config: Config): void {
         const { host, totp, key, password } = config;
 
-        if(host && totp && key && password){
-            fs.outputJSONSync(configPath, { host, key })
-            
-            keytar.setPassword('lynx', 'totp', totp);
-            keytar.setPassword('lynx', 'password', password);
-            return true;
-        }else{
-            return false;
-        }
+        fs.outputJSONSync(configPath, { host, key })
+        
+        keytar.setPassword('lynx', 'totp', totp);
+        keytar.setPassword('lynx', 'password', password);
     }
 
     static async get(): Promise<Config> {

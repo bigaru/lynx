@@ -11,10 +11,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/ansi-colors": "^3.2.0",
     "@types/axios": "^0.14.0",
     "@types/fs-extra": "^8.0.0",
-    "@types/minimist": "^1.2.0",
     "@types/openpgp": "^4.4.6",
+    "@types/prompts": "^2.0.1",
     "@types/speakeasy": "^2.0.4",
     "@types/text-table": "^0.2.1",
     "gulp": "^4.0.2",
@@ -22,11 +23,12 @@
     "typescript": "^3.5.3"
   },
   "dependencies": {
+    "ansi-colors": "^4.1.1",
     "axios": "^0.19.0",
     "fs-extra": "^8.1.0",
     "keytar": "^4.11.0",
-    "minimist": "^1.2.0",
     "openpgp": "^4.5.5",
+    "prompts": "^2.1.0",
     "speakeasy": "^2.0.0",
     "text-table": "^0.2.0"
   }
