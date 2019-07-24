@@ -2,9 +2,11 @@
 
 import c from 'ansi-colors'
 import table from 'text-table'
-import { BackendService } from './BackendService'
+import { BackendService, Memo } from './BackendService'
 import { Config, ConfigService } from './ConfigService'
 import prompts, { PromptObject } from 'prompts'
+import * as pgp from 'openpgp'
+import fs from 'fs-extra'
 
 enum CMD {
     INIT = 'init',
@@ -63,7 +65,9 @@ if(process.argv.length > 2){
             break
 
         case CMD.DECRYPT: 
+            pickAndDecrypt()
             break
+
         case CMD.HELP: 
             break;
     }
@@ -111,3 +115,57 @@ function showMemos(config: Config) {
     .then(console.log)
 }
 
+const decryptMemo = (config: Config) => async (memo: Memo) => {
+    const privKeyObj = await fs.readFile(config.key, 'utf8')
+                               .then(privKey => pgp.key.readArmored(privKey))
+                               .then(o => o.keys[0])
+
+    await privKeyObj.decrypt(config.password);
+
+
+    const decOpt: pgp.DecryptOptions = {
+        message: await pgp.message.readArmored(memo.content),
+        privateKeys: [privKeyObj],
+        format: 'binary'
+    }
+    const plaintext = (await pgp.decrypt(decOpt)).data as Uint8Array;
+    const notUsedName = findNewName(process.env.HOME + '/Downloads/', memo.name)
+    fs.outputFile(notUsedName, plaintext)
+    console.log('successfully decrypted & saved: ' + c.green(notUsedName))
+}
+
+function findNewName(dir: string, filename: string){
+    let counter = 0
+    const name = filename.substring(0, filename.lastIndexOf('.'))
+    const extension = filename.substring(filename.lastIndexOf('.'), filename.length)
+
+    while(fs.pathExistsSync(dir + filename)){
+        filename = `${name}_${counter}${extension}`
+        counter++;
+    }
+
+    return dir+filename;
+}
+
+async function pickAndDecrypt(){
+    const config = await ConfigService.get()
+    const memos = await BackendService.fetchAll(config)
+    const decrypter = decryptMemo(config)
+
+    if(memos.length < 0){
+        showError('No memos for decryption')
+        return;
+    }
+
+    const choices = memos.map(m => { return { title: `${m.name} (${m._id})`, value: m._id }})
+    const question: PromptObject = {
+        type: 'select',
+        name: 'value',
+        message: 'Pick a Memo',
+        choices: choices
+    }
+
+    prompts(question)
+     .then(res => memos.find(m => m._id === res.value)!)
+     .then(decrypter)
+}
