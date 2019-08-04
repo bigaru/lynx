@@ -5,9 +5,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="silder.css">
   <script src="js/openpgp.min.js"></script>
   <script src="js/pako.min.js"></script> 
-  <script src="js/bundle.js"></script> 
+  <script src="js/bundle.js"></script>
 </head>
 <body class="bg-dark min-vh-100">
 <div class="container">
@@ -27,6 +28,14 @@
                 <label for="file">File:</label>
                 <br>
                 <input type="file" id="file">
+            </div>
+            <div>
+                <svg id="captcha" width="500" height="50">
+                    <rect id="bg" width="500" height="50" class="c-bg" />
+                    <rect width="200" height="50" class="c-fg" />
+                    <line id="line" x1="0" x2="0" y1="0" y2="50" class="c-line" />
+                </svg> 
+                <input id="slider" class="slider" type="range" value="0" min="0" max="500" />
             </div>
             <div>
                 <button type="submit" id="btnSendMsg" class="btn btn-outline-primary">send message</button>

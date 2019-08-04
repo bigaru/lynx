@@ -7,7 +7,34 @@ document.addEventListener('DOMContentLoaded', event => {
     
     if (btnSendMsg) btnSendMsg.addEventListener('click', sendMsg)
     if (btnSendFile) btnSendFile.addEventListener('click', sendFile)
+
+    // TODO add text which becomes visible through sliding
+    // TODO one honeypot text and real one
+    
+    // TODO send XOR constant & result 
+    // XOR(slider-value, constant) === result
+    // if(result) showRealText()
+    document.getElementById('slider')!.addEventListener('change', (event:any) => {
+        const val = ""+(event.target.value);        
+        const line = document.getElementById('line')!;
+        const bg = document.getElementById('bg')!;
+
+        line.setAttribute('x1', val);
+        line.setAttribute('x2', val);
+
+        const color = "#" + XOR_hex(val,'962');
+        console.log(color)
+        bg.style.fill = color
+    })
 })
+
+function XOR_hex(a: any, b: any) {
+    var res = "",
+        l = Math.max(a.length, b.length);
+    for (var i=0; i<l; i+=4)
+        res = ("000"+(parseInt(a.slice(-i-4, -i||a.length), 16) ^ parseInt(b.slice(-i-4, -i||b.length), 16)).toString(16)).slice(-4) + res;
+    return res;
+}
 
 type Message = openpgp.message.Message
 type Key = openpgp.key.Key[]
