@@ -19,7 +19,7 @@ services:
       - "80:80"
     environment:
       - DB_URL=mongodb://pandadb:27017
-#     TOTP shared key in base32 format     
+#     TOTP shared key in hex format     
 #      - TOTP_KEY=
     depends_on:
       - pandadb

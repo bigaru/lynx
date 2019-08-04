@@ -1,9 +1,7 @@
-#!/usr/bin/env node
-
 import fs from 'fs-extra'
 import speakeasy from 'speakeasy'
 import * as pgp from 'openpgp'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { Config } from './ConfigService';
 
 export interface Memo {
@@ -13,14 +11,6 @@ export interface Memo {
 }
 
 export class BackendService {
-
-    static async fetchAll(config: Config): Promise<Memo[]> {
-        const makeRequest = this.makeRequest(config)
-        
-        return this.getAuthorization(config)
-                    .then(makeRequest)
-    }
-
     private static async getToken(config: Config){
         return speakeasy.totp({ secret: config.totp, encoding: 'hex'})
     }
@@ -54,10 +44,25 @@ export class BackendService {
         return token + "." + signature
     }
 
-    private static makeRequest = (config: Config) => (authToken: string) => {
-        return axios
-        .get<Memo[]>(config.host + '/memos', { headers: { Authorization : authToken } })
-        .then(res => res.data)
-    }
+    static fetchAll = (config: Config): Promise<Memo[]> => 
+        BackendService
+         .getAuthorization(config)
+         .then(authToken => axios
+                            .get<Memo[]>(config.host + '/memos/', { headers: { Authorization : authToken } })
+                            .then(res => res.data)
+        )
+    
+    static removeMany = (config: Config) => (ids: string[]): Promise<AxiosResponse<void>> =>
+        BackendService
+         .getAuthorization(config)
+         .then(authToken => { 
+            const axiosConfig = { 
+                 headers: { Authorization : authToken },
+                 data: ids 
+            }
+
+            return axios.delete<void>(config.host + '/memos/', axiosConfig)}
+        )
+    
 
 }

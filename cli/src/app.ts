@@ -13,6 +13,7 @@ enum CMD {
     HELP = 'help',
     FETCH = 'fetch',
     DECRYPT = 'decrypt',
+    REMOVE = 'remove',
 }
 
 const initQuestion: PromptObject[] = [
@@ -65,8 +66,16 @@ if(process.argv.length > 2){
             break
 
         case CMD.DECRYPT: 
-            pickAndDecrypt()
+            ConfigService
+             .get()
+             .then(pickAndDecrypt)
             break
+
+        case CMD.REMOVE: 
+            ConfigService
+             .get()
+             .then(selectAndRemove)
+            break;
 
         case CMD.HELP: 
             break;
@@ -147,8 +156,7 @@ function findNewName(dir: string, filename: string){
     return dir+filename;
 }
 
-async function pickAndDecrypt(){
-    const config = await ConfigService.get()
+async function pickAndDecrypt(config: Config){
     const memos = await BackendService.fetchAll(config)
     const decrypter = decryptMemo(config)
 
@@ -168,4 +176,26 @@ async function pickAndDecrypt(){
     prompts(question)
      .then(res => memos.find(m => m._id === res.value)!)
      .then(decrypter)
+}
+
+async function selectAndRemove(config: Config){
+    const memos = await BackendService.fetchAll(config)
+    const removeMany = BackendService.removeMany(config)
+
+    if(memos.length < 0){
+        showError('No memos for removal')
+        return;
+    }
+
+    const choices = memos.map(m => { return { title: `${m.name} (${m._id})`, value: m._id }})
+    const question: PromptObject = {
+        type: 'multiselect',
+        name: 'value',
+        message: 'Select memos for removal',
+        choices: choices,
+    }
+
+    prompts(question)
+     .then(a => a.value)
+     .then(removeMany)
 }
