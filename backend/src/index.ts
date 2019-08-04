@@ -29,6 +29,7 @@ app.use('/js/', express.static(__dirname + '/../node_modules/pako/dist/'))
 app.get('/', (req, res) => res.sendFile('index.html'))
 
 app.post('/memos/', memoController.addOne)
+app.delete('/memos/', authenticationChecker.isTokenCorrect, memoController.removeMany)
 app.get('/memos/', authenticationChecker.isTokenCorrect, memoController.getAll)
 
 app.all("/*",(req, res) => res.sendStatus(404))

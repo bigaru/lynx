@@ -34,4 +34,14 @@ export default class MemoController{
                         .catch(err => { res.sendStatus(500) })
     }
 
+    removeMany = (req: Request, res: Response) => {
+        const ids: string[] = req.body
+        this.dbService.removeMemos(ids)
+                        .then(result => {
+                            if(ids.length === result.n) res.sendStatus(200);
+                            else res.sendStatus(400);
+                        })
+                        .catch(err => { res.sendStatus(500) })
+    }
+
 }

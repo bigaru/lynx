@@ -1,4 +1,4 @@
-import { MongoClient, Collection } from 'mongodb'
+import { MongoClient, Collection, ObjectId } from 'mongodb'
 
 interface Memo{
     _id: string,
@@ -49,6 +49,13 @@ export default class MongoService{
     getMemos = (): Promise<Memo[]> => {
         return this.getCollection("memos")
                     .then(col => col.find({}).toArray())
+    }
+
+    removeMemos = (documentIds: string[]): Promise<{ ok?: number, n?: number }> => {
+        const objectIds = documentIds.map(i => ObjectId.createFromHexString(i))
+        return this.getCollection("memos")
+            .then(col => col.deleteMany({ _id: { $in:objectIds }}))
+            .then(res => res.result);
     }
 
     close = () => {
