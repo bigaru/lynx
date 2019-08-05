@@ -8,23 +8,10 @@ document.addEventListener('DOMContentLoaded', event => {
     if (btnSendMsg) btnSendMsg.addEventListener('click', sendMsg)
     if (btnSendFile) btnSendFile.addEventListener('click', sendFile)
 
-    // TODO add text which becomes visible through sliding
-    // TODO one honeypot text and real one
-    
-    // TODO send XOR constant & result 
-    // XOR(slider-value, constant) === result
-    // if(result) showRealText()
     document.getElementById('slider')!.addEventListener('change', (event:any) => {
-        const val = ""+(event.target.value);        
-        const line = document.getElementById('line')!;
-        const bg = document.getElementById('bg')!;
-
-        line.setAttribute('x1', val);
-        line.setAttribute('x2', val);
-
-        const color = "#" + XOR_hex(val,'962');
-        console.log(color)
-        bg.style.fill = color
+        const val = event.target.value;
+        const cube = document.getElementById('cube')!;
+        cube.style.left = val + 'px';
     })
 })
 

@@ -30,16 +30,20 @@
     border: 0;
     border-radius: 50%;
   }
-
-  .c-bg{
-    fill:darkturquoise;
+  #bg-cube{
+    background: url('./bg.png') no-repeat;
+    background-size: auto 100px;
+    margin: 1em 0;
+    height: 100px;
   }
 
-  .c-fg{
-    fill:crimson
-  }
+  #cube{
+    background: url('./cube.png') no-repeat;
+    background-size: 100px 100px;
+    padding: 1em 0;
+    height: 100px;
+    width: 100px;
 
-  .c-line{
-    stroke:#fff;
-    stroke-width: 5px;
+    position: relative;
+    left: 0px;
   }
