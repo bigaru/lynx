@@ -24,6 +24,7 @@ function importKey (cb) {
 
 function copyAssets(cb) {
     gulp.src('./src/public/*').pipe(gulp.dest('./dist/public/'))
+    gulp.src('./src/assets/*').pipe(gulp.dest('./dist/assets/'))
 
     cb()
 }

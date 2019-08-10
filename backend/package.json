@@ -23,6 +23,7 @@
     "mongodb": "^3.2.7",
     "openpgp": "^4.5.3",
     "pako": "^1.0.10",
+    "sharp": "^0.23.0",
     "speakeasy": "^2.0.0"
   },
   "devDependencies": {
@@ -30,6 +31,7 @@
     "@types/mongodb": "^3.1.28",
     "@types/openpgp": "^4.4.5",
     "@types/pako": "^1.0.1",
+    "@types/sharp": "^0.22.2",
     "@types/speakeasy": "^2.0.4",
     "fs-extra": "^8.0.1",
     "gulp": "^4.0.2",

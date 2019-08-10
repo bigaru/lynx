@@ -37,7 +37,7 @@
   }
 
   #bg-cube{
-    background: url('./bg.png') no-repeat;
+    background: url('./captcha.png') no-repeat;
     background-size: auto var(--side);
     margin: 1em 0;
     height: var(--side);

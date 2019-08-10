@@ -1,6 +1,7 @@
 import MongoService from './MongoService'
 import express from 'express'
 import MemoController from './MemoController'
+import CaptchaService from './CaptchaService'
 import AuthenticationChecker from './AuthenticationChecker'
 import SecurityHeaders from './SecurityHeaders'
 
@@ -13,6 +14,7 @@ const payLoadSize = process.env.PAYLOAD_SIZE || '100mb'
 const mongoService = new MongoService(dbUrl, dbName)
 const authenticationChecker = new AuthenticationChecker()
 const memoController = new MemoController(mongoService)
+const captchaService = new CaptchaService()
 
 process.on('SIGINT', () => {
     mongoService.close()
@@ -27,6 +29,7 @@ app.use('/js/', express.static(__dirname + '/../node_modules/openpgp/dist/'))
 app.use('/js/', express.static(__dirname + '/../node_modules/pako/dist/'))
 
 app.get('/', (req, res) => res.sendFile('index.html'))
+app.get('/captcha.png', captchaService.getNext)
 
 app.post('/memos/', memoController.addOne)
 app.delete('/memos/', authenticationChecker.isTokenCorrect, memoController.removeMany)
