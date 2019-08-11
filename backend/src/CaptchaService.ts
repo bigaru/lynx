@@ -4,11 +4,13 @@ import crypto from 'crypto'
 const { random } = require('make-random')
 
 export default class CaptchaService{
-    MAX: number
+    readonly MAX: number
+    readonly TOLERANCE: number
     secret: string
 
-    constructor(max: number){
-        this.MAX = max;
+    constructor(max: number, tolerance: number){
+        this.MAX = max
+        this.TOLERANCE = tolerance
         crypto.randomBytes(64, (err, buf) => this.secret = buf.toString('hex'))
     }
 
@@ -60,11 +62,18 @@ export default class CaptchaService{
         const solution = req.cookies['Captcha-Response']
         const MAC = req.cookies['Captcha-MAC']
 
-        const possibles = [-5,-4,-3,-2,-1,0,1,2,3,4,5]
-                            .map(r => solution-r)
-                            .map(p => this.getHash(''+p))
+        const toleranceRange = this.MAX * this.TOLERANCE
+        const candidates: number[] = []
+        for(let i = -toleranceRange; i <= toleranceRange; i++){
+            candidates.push(i)
+        }
 
-        if(possibles.filter(h => h === MAC).length > 0) next()
+        const rightCandidate = candidates
+                                 .map(c => solution-c)
+                                 .map(p => this.getHash(''+p))
+                                 .filter(h => h === MAC)
+
+        if(rightCandidate.length > 0) next()
         else res.sendStatus(400);
     }
 

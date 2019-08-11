@@ -15,7 +15,7 @@ const payLoadSize = process.env.PAYLOAD_SIZE || '100mb'
 const mongoService = new MongoService(dbUrl, dbName)
 const authenticationChecker = new AuthenticationChecker()
 const memoController = new MemoController(mongoService)
-const captchaService = new CaptchaService(400)
+const captchaService = new CaptchaService(400,0.0075)
 
 process.on('SIGINT', () => {
     mongoService.close()

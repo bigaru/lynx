@@ -77,6 +77,10 @@ const postMsg = (name: string) => (msg: string) => {
             toast.textContent = 'message successfully transmitted'
             toast.className = 'alert alert-success'
         }
+        else if(response.status === 400){
+            toast.textContent = 'wrong captcha'
+            toast.className = 'alert alert-warning'
+        }
         else{
             toast.textContent = 'failed'
             toast.className = 'alert alert-danger'
