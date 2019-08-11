@@ -1,6 +1,8 @@
 /// <reference path="../../../node_modules/@types/openpgp/index.d.ts" />
 /// <reference path="../../../node_modules/@types/pako/index.d.ts" />
 
+let response: string;
+
 document.addEventListener('DOMContentLoaded', event => { 
     const btnSendMsg = document.getElementById('btnSendMsg')
     const btnSendFile = document.getElementById('btnSendFile')
@@ -12,16 +14,10 @@ document.addEventListener('DOMContentLoaded', event => {
         const val = event.target.value;
         const cube = document.getElementById('cube')!;
         cube.style.left = val + 'px';
+        
+        response = val;
     })
 })
-
-function XOR_hex(a: any, b: any) {
-    var res = "",
-        l = Math.max(a.length, b.length);
-    for (var i=0; i<l; i+=4)
-        res = ("000"+(parseInt(a.slice(-i-4, -i||a.length), 16) ^ parseInt(b.slice(-i-4, -i||b.length), 16)).toString(16)).slice(-4) + res;
-    return res;
-}
 
 type Message = openpgp.message.Message
 type Key = openpgp.key.Key[]
@@ -64,9 +60,15 @@ const postMsg = (name: string) => (msg: string) => {
     const httpBody = { content: msg, name }
     const toast = document.getElementById('toast') as HTMLDivElement
 
+    document.cookie = "Captcha-Response="+response
+
     fetch('memos/', { 
         method: 'POST', 
-        headers: {'Content-Type': 'application/json', 'Content-Encoding': 'gzip' },
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Encoding': 'gzip',
+            'X-Captcha-Response': response 
+        },
         body: pako.gzip(JSON.stringify(httpBody))
     })
     .then(response => {

@@ -19,6 +19,7 @@
   "homepage": "https://github.com/bigaru/lynx#readme",
   "dependencies": {
     "bootstrap": "^4.3.1",
+    "cookie-parser": "^1.4.4",
     "express": "^4.17.1",
     "make-random": "^1.2.0",
     "mongodb": "^3.2.7",
@@ -28,6 +29,7 @@
     "speakeasy": "^2.0.0"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.1",
     "@types/express": "^4.17.0",
     "@types/mongodb": "^3.1.28",
     "@types/openpgp": "^4.4.5",

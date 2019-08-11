@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import sharp from 'sharp'
 import crypto from 'crypto'
 const { random } = require('make-random')
@@ -33,10 +33,10 @@ export default class CaptchaService{
 
     private completeResponse = (res: Response) => (tuple: [Buffer, number]) => {
         const [buf, randVal] = tuple
+        res.cookie('Captcha-MAC', this.getHash(''+randVal))
         res.writeHead(200, {
             'Content-Type': 'image/png',
             'Content-Length': buf.length,
-            'X-Captcha-MAC': this.getHash(''+randVal)
         })
         
         res.end(buf);
@@ -52,6 +52,18 @@ export default class CaptchaService{
                 console.log(err)
                 res.sendStatus(500);
             })
+    }
+
+    isCaptchaCorrect = (req: Request, res: Response, next: NextFunction) => {
+        const solution = req.cookies['Captcha-Response']
+        const MAC = req.cookies['Captcha-MAC']
+
+        const possibles = [-5,-4,-3,-2,-1,0,1,2,3,4,5]
+                            .map(r => solution-r)
+                            .map(p => this.getHash(''+p))
+
+        if(possibles.filter(h => h === MAC).length > 0) next()
+        else res.sendStatus(400);
     }
 
 }

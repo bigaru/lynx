@@ -4,6 +4,7 @@ import MemoController from './MemoController'
 import CaptchaService from './CaptchaService'
 import AuthenticationChecker from './AuthenticationChecker'
 import SecurityHeaders from './SecurityHeaders'
+import cookieParser from 'cookie-parser'
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -22,6 +23,7 @@ process.on('SIGINT', () => {
 })
 
 app.use(SecurityHeaders)
+app.use(cookieParser())
 app.use(express.json({ limit: payLoadSize }))
 app.use(express.static(__dirname + '/public'))
 app.use('/css/', express.static(__dirname + '/../node_modules/bootstrap/dist/css/'))
@@ -31,7 +33,7 @@ app.use('/js/', express.static(__dirname + '/../node_modules/pako/dist/'))
 app.get('/', (req, res) => res.sendFile('index.html'))
 app.get('/captcha.png', captchaService.getNext)
 
-app.post('/memos/', memoController.addOne)
+app.post('/memos/', captchaService.isCaptchaCorrect, memoController.addOne)
 app.delete('/memos/', authenticationChecker.isTokenCorrect, memoController.removeMany)
 app.get('/memos/', authenticationChecker.isTokenCorrect, memoController.getAll)
 

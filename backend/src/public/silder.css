@@ -47,7 +47,6 @@
   #cube{
     background: url('./cube.png') no-repeat;
     background-size: var(--side) var(--side);
-    padding: 1em 0;
     height: var(--side);
     width: var(--side);
 
