@@ -9,7 +9,7 @@ export default class CaptchaService{
 
     constructor(max: number){
         this.MAX = max;
-        crypto.randomBytes(256, (err, buf) => this.secret = buf.toString('hex'))
+        crypto.randomBytes(64, (err, buf) => this.secret = buf.toString('hex'))
     }
 
     private getHash = (solution: string) => {
@@ -18,17 +18,19 @@ export default class CaptchaService{
         .digest('base64')
     }
 
-    private makeImageLarger = (randVal: number): Promise<[Buffer, number]> => {
+    private makeImageLarger = (leftPadding: number): Promise<[Buffer, number]> => {
+        const complement = this.MAX - leftPadding;
+
         return sharp(__dirname + '/assets/bg.png')
         .extend({
             top: 0,
             bottom: 0,
-            left: randVal,
-            right: 0,
+            left: leftPadding,
+            right: complement,
             background: { r: 0, g: 0, b: 0, alpha: 0 }
         })
         .toBuffer()
-        .then(buf => [buf, randVal])
+        .then(buf => [buf, leftPadding])
     }
 
     private completeResponse = (res: Response) => (tuple: [Buffer, number]) => {

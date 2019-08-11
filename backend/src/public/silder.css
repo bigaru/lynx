@@ -1,7 +1,11 @@
+  :root {
+    --side: 50px;
+  }
+
   .slider {
     -webkit-appearance: none; 
     appearance: none;
-    width: 100%;
+    width: 450px;
     height: 1em;
     background: #343a40;
     outline: none; 
@@ -14,26 +18,22 @@
   .slider::-webkit-slider-thumb {
     -webkit-appearance: none; 
     appearance: none;
-    width: 1em; 
-    height: 2.5em; 
+    width: var(--side); 
+    height: var(--side); 
     background: #007bff; 
     cursor: pointer; 
     border: 0;
-    border-radius: 5px;
+    border-radius: 50%;
   }
   
   .slider::-moz-range-thumb {
     appearance: none;
-    width: 1em; 
-    height: 2.5em; 
+    width: var(--side); 
+    height: var(--side); 
     background: #007bff; 
     cursor: pointer; 
     border: 0;
-    border-radius: 5px;
-  }
-
-  :root {
-    --side: 50px;
+    border-radius: 50%;
   }
 
   #bg-cube{
@@ -41,7 +41,7 @@
     background-size: auto var(--side);
     margin: 1em 0;
     height: var(--side);
-    width: 500px;
+    width: 450px;
   }
 
   #cube{

@@ -10,9 +10,10 @@ document.addEventListener('DOMContentLoaded', event => {
     if (btnSendMsg) btnSendMsg.addEventListener('click', sendMsg)
     if (btnSendFile) btnSendFile.addEventListener('click', sendFile)
 
-    document.getElementById('slider')!.addEventListener('change', (event:any) => {
-        const val = event.target.value;
+    document.getElementById('slider')!.addEventListener('input', (event:any) => {
+        let val = event.target.value;
         const cube = document.getElementById('cube')!;
+        // val = parseInt(val) - 25 + 8;
         cube.style.left = val + 'px';
         
         response = val;

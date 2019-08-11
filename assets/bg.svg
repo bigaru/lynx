@@ -29,8 +29,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="3.959798"
-     inkscape:cx="15.75785"
-     inkscape:cy="78.514523"
+     inkscape:cx="-54.321482"
+     inkscape:cy="78.009447"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -58,24 +58,24 @@
      transform="translate(0,-247)">
     <rect
        id="rect10"
-       width="48.677464"
-       height="48.677464"
-       x="0.66126913"
-       y="247.66127"
-       style="fill:none;stroke:#000000;stroke-width:1.16390208;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:13.966825,13.966825;stroke-dashoffset:11.63902083;stroke-opacity:1" />
+       width="48.032749"
+       height="48.032745"
+       x="0.9836266"
+       y="247.98363"
+       style="fill:none;stroke:#007bff;stroke-width:1.96725321;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:11.64000034;stroke-opacity:1" />
     <rect
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.58808786;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:14.1141082, 0.58808784;stroke-dashoffset:49.9856987;stroke-opacity:1"
+       style="fill:#007bff;fill-opacity:1;stroke:none;stroke-width:0.83168185;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:19.96036324, 0.8316818;stroke-dashoffset:49.9856987;stroke-opacity:1"
        id="rect4547"
-       width="1"
+       width="2"
        height="15"
-       x="24.5"
+       x="24"
        y="264.5" />
     <rect
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.58808786;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:14.11410836, 0.58808785;stroke-dashoffset:49.9856987;stroke-opacity:1"
+       style="fill:#007bff;fill-opacity:1;stroke:none;stroke-width:0.83168185;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:19.96036346, 0.83168181;stroke-dashoffset:49.9856987;stroke-opacity:1"
        id="rect4547-6"
        width="15"
-       height="1"
+       height="2"
        x="17.5"
-       y="271.5" />
+       y="271" />
   </g>
 </svg>
