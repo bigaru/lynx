@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', event => {
     document.getElementById('slider')!.addEventListener('input', (event:any) => {
         let val = event.target.value;
         const cube = document.getElementById('cube')!;
-        // val = parseInt(val) - 25 + 8;
         cube.style.left = val + 'px';
         
         response = val;
@@ -68,14 +67,13 @@ const postMsg = (name: string) => (msg: string) => {
         headers: {
             'Content-Type': 'application/json',
             'Content-Encoding': 'gzip',
-            'X-Captcha-Response': response 
         },
         body: pako.gzip(JSON.stringify(httpBody))
     })
     .then(response => {
         if(response.status === 201){ 
-            toast.textContent = 'message successfully transmitted'
-            toast.className = 'alert alert-success'
+            (document.getElementById('slider')! as HTMLInputElement).value = '0';
+            location.reload(); 
         }
         else if(response.status === 400){
             toast.textContent = 'wrong captcha'
@@ -85,11 +83,6 @@ const postMsg = (name: string) => (msg: string) => {
             toast.textContent = 'failed'
             toast.className = 'alert alert-danger'
         }
-
-        setTimeout(() => {
-            toast.textContent = ''
-            toast.className = ''
-        }, 4000)
     })
 }
 
