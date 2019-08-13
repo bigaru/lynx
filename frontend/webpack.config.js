@@ -44,5 +44,10 @@ module.exports = {
         collapseInlineTagWhitespace: true
       }
     })
-  ]
+  ],
+  devServer: {
+    historyApiFallback: {
+      disableDotRule: true
+    }
+  }
 };

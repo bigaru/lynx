@@ -1,1 +1,1 @@
-export { Home } from './Home';
+export { Home, CardType, Props as HomeProps } from './Home';
