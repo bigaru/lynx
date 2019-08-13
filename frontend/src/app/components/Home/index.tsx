@@ -1,43 +1,58 @@
 import React, { Component } from 'react';
 import * as styles from './style.css';
-import { Card, Navbar, NavbarGroup, AnchorButton } from '@blueprintjs/core';
+import { Card, Navbar, NavbarGroup, Button, TextArea, Intent } from '@blueprintjs/core';
 
-export enum CardType {
+enum CardType {
   MESSAGE,
   FILE
 }
 
-export interface Props {
+export interface Props {}
+interface State {
   type: CardType;
 }
 
-export class Home extends Component<Props> {
+export class Home extends Component<Props, State> {
+  readonly state: State = { type: CardType.MESSAGE };
+
   render = () => {
-    const { type } = this.props;
+    const { type } = this.state;
     return (
-      <div className={styles.cardContainer}>
-        <Card className={styles.card}>
-          <Navbar>
-            <NavbarGroup>
-              <AnchorButton
-                large
-                minimal
-                icon="document"
-                text="Message"
-                href="/"
-                active={type === CardType.MESSAGE}
+      <div className={styles.appContainer}>
+        <div className={styles.cardContainer}>
+          <Card className={styles.card}>
+            <Navbar>
+              <NavbarGroup>
+                <Button
+                  large
+                  minimal
+                  icon="document"
+                  text="Message"
+                  onClick={() => this.setState({ type: CardType.MESSAGE })}
+                  active={type === CardType.MESSAGE}
+                />
+                <Button
+                  large
+                  minimal
+                  icon="box"
+                  text="Files"
+                  onClick={() => this.setState({ type: CardType.FILE })}
+                  active={type === CardType.FILE}
+                />
+              </NavbarGroup>
+            </Navbar>
+
+            {type === CardType.MESSAGE ? (
+              <TextArea
+                className={styles.textMessage}
+                growVertically={true}
+                large={true}
+                intent={Intent.PRIMARY}
+                onChange={(event) => console.log(event.target.value)}
               />
-              <AnchorButton
-                large
-                minimal
-                icon="box"
-                text="Files"
-                href="/files"
-                active={type === CardType.FILE}
-              />
-            </NavbarGroup>
-          </Navbar>
-        </Card>
+            ) : null}
+          </Card>
+        </div>
       </div>
     );
   };
