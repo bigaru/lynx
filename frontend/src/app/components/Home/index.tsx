@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import * as styles from './style.css';
-import { Card, Navbar, NavbarGroup, Button, TextArea, Intent } from '@blueprintjs/core';
+import { Header } from '../index';
+import { Card, Button, TextArea, Intent } from '@blueprintjs/core';
 
-enum CardType {
+export enum CardType {
   MESSAGE,
   FILE
 }
@@ -15,45 +16,27 @@ interface State {
 export class Home extends Component<Props, State> {
   readonly state: State = { type: CardType.MESSAGE };
 
+  private setCardType = (selectedType: CardType) => () => this.setState({ type: selectedType });
+
   render = () => {
     const { type } = this.state;
     return (
-      <div className={styles.appContainer}>
-        <div className={styles.cardContainer}>
-          <Card className={styles.card}>
-            <Navbar>
-              <NavbarGroup>
-                <Button
-                  large
-                  minimal
-                  icon="document"
-                  text="Message"
-                  onClick={() => this.setState({ type: CardType.MESSAGE })}
-                  active={type === CardType.MESSAGE}
-                />
-                <Button
-                  large
-                  minimal
-                  icon="box"
-                  text="Files"
-                  onClick={() => this.setState({ type: CardType.FILE })}
-                  active={type === CardType.FILE}
-                />
-              </NavbarGroup>
-            </Navbar>
+      <Card className={styles.card}>
+        <Header type={type} onClick={this.setCardType} />
+        {type === CardType.MESSAGE ? (
+          <TextArea
+            className={styles.textMessage}
+            growVertically={true}
+            large={true}
+            intent={Intent.PRIMARY}
+            onChange={(event) => console.log(event.target.value)}
+          />
+        ) : null}
 
-            {type === CardType.MESSAGE ? (
-              <TextArea
-                className={styles.textMessage}
-                growVertically={true}
-                large={true}
-                intent={Intent.PRIMARY}
-                onChange={(event) => console.log(event.target.value)}
-              />
-            ) : null}
-          </Card>
-        </div>
-      </div>
+        <Button large intent={Intent.PRIMARY}>
+          Send
+        </Button>
+      </Card>
     );
   };
 }

@@ -1,18 +1,16 @@
-.appContainer {
-    background-color: #30404D;
-    height: 100vh;
-}
-.cardContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 75vh;
-}
 .card {
     width: 768px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 500px;
+}
+
+.card > * {
+    margin: 0.5em;
 }
 
 .textMessage {
-    width: 100%;
-    min-height: 10em;
+    flex: 1;
+    min-width: 712px;
 }

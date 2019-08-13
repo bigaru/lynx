@@ -1,0 +1,16 @@
+.button {
+    border: 0;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s linear;
+    padding: 0.5em;
+    border-radius: 5px;
+
+}
+
+.active{
+    background: #fff;
+    color: #137cbd;
+}

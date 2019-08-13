@@ -1,0 +1,11 @@
+.heading {
+    font-weight: bold;
+}
+
+.switch {
+    border-radius: 5px;
+    display: inline;
+    margin: 0.5em;
+    padding: 0.75em 0.4em;
+    background:#137cbd;
+}

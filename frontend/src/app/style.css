@@ -1,0 +1,11 @@
+.appContainer {
+  background-color: #30404d;
+  height: 100vh;
+}
+.cardContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 5em;
+}
