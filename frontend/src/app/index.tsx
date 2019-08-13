@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router';
-import Hello from './components/Hello';
+import { Home } from './components/';
 
-class Home extends Component {
+export class App extends Component {
   render = () => (
     <Switch>
-      <Route path="/" component={Hello} />
+      <Route path="/" component={Home} />
     </Switch>
   );
 }
-
-export default Home;
