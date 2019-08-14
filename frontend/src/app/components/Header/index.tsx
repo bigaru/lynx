@@ -23,7 +23,7 @@ export class Header extends Component<Props> {
             File
           </SwitchButton>
         </div>
-        <span className={styles.heading}>privately</span>
+        <span className={styles.heading}>secretly</span>
       </div>
     );
   };

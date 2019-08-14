@@ -33,7 +33,7 @@ export class Home extends Component<Props, State> {
           />
         ) : null}
 
-        <Button large intent={Intent.PRIMARY}>
+        <Button intent={Intent.PRIMARY} className={styles.mainButton}>
           Send
         </Button>
       </Card>

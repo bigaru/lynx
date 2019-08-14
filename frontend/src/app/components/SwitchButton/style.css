@@ -1,16 +1,16 @@
 .button {
-    border: 0;
-    background: transparent;
-    color: #fff;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s linear;
-    padding: 0.5em;
-    border-radius: 5px;
-
+  border: 0;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s linear;
+  padding: 0.5em;
+  border-radius: 5px;
+  font-size: 1.5em;
 }
 
-.active{
-    background: #fff;
-    color: #137cbd;
+.active {
+  background: #fff;
+  color: #137cbd;
 }
