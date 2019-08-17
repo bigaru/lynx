@@ -6,13 +6,10 @@
   max-height: 500px;
 }
 
-.card > * {
-  margin: 0.5em;
-}
-
 .textMessage {
   flex: 1;
   min-width: 712px;
+  margin: 0.5rem;
 }
 
 .mainButton {
@@ -21,4 +18,51 @@
   min-width: 40px;
   min-height: 40px;
   padding: 5px 15px;
+  margin: 0.5rem;
+}
+
+.dropContainer {
+  border: 0.25em dashed #202b3380;
+  border-radius: 10px;
+}
+
+.dropContainerActive {
+  border: 0.25em dashed #202b33;
+}
+
+.dropText {
+  font-weight: bold;
+  font-size: 1.25em;
+}
+
+.dropTextActive {
+  color: #137cbd;
+}
+
+.fileContainer {
+  flex: 1;
+  margin: 0.5rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.fileCard {
+  width: 100%;
+  display: flex;
+  background: #ebf1f5;
+}
+
+.fileName {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+  margin: 0 0.5em;
+}
+
+.fileSize {
+  margin-right: 1.5em;
 }
