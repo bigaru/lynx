@@ -16,6 +16,5 @@
 }
 
 .button:hover:not(.active) {
-  background: #ffffff70;
-  color: #137cbd;
+  background: #0e5a8a;
 }
