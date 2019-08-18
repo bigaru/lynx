@@ -1,0 +1,46 @@
+.dialogContainer {
+  padding: 1em;
+  width: auto;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+}
+
+.title {
+  margin-bottom: 0;
+  flex: 1;
+}
+
+.sliderCube {
+  background: url('../../../assets/img/cube.png') no-repeat;
+  background-size: var(--side) var(--side);
+  height: var(--side);
+  width: var(--side);
+
+  position: relative;
+}
+
+.sliderBg {
+  background: url('../../../assets/img/captcha.png') no-repeat;
+  background-size: auto var(--side);
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+  margin-left: 50px;
+  height: var(--side);
+  width: 450px;
+}
+
+.slider {
+  width: 458px;
+  margin-bottom: 1.5em;
+}
+
+.slider > span {
+  width: var(--side);
+}
+
+.confirmButton {
+  margin: 1em 0;
+}
