@@ -25,7 +25,7 @@
     "mongodb": "^3.2.7",
     "openpgp": "^4.5.3",
     "pako": "^1.0.10",
-    "sharp": "^0.23.0",
+    "sharp": "^0.30.5",
     "speakeasy": "^2.0.0"
   },
   "devDependencies": {
