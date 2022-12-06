@@ -20,7 +20,7 @@
   "dependencies": {
     "bootstrap": "^4.3.1",
     "cookie-parser": "^1.4.4",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "make-random": "^1.2.0",
     "mongodb": "^3.2.7",
     "openpgp": "^4.5.3",
